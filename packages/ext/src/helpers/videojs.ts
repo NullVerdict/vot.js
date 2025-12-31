@@ -13,8 +13,29 @@ export default class VideoJSHelper extends BaseHelper {
   SUBTITLE_FORMAT = "vtt";
 
   static getPlayer<T extends VideoJS.PlayerOptions = VideoJS.PlayerOptions>() {
-    return document.querySelector<VideoJS.PlayerElement<T>>(".video-js, vjs-tech")
-      ?.player;
+    const vjs = (window as any).videojs;
+
+    const root = document.querySelector<HTMLElement>(".video-js");
+    const el =
+      (root?.matches("video, video-js") ? root : root?.querySelector("video, video-js")) ??
+      document.querySelector<HTMLElement>("video.video-js, video-js");
+
+    const legacyPlayer = (el as any)?.player;
+    if (legacyPlayer) return legacyPlayer as VideoJS.Player<T>;
+
+    const byGetPlayer =
+      vjs?.getPlayer?.((el as any)?.id ?? el) ??
+      vjs?.getPlayer?.((root as any)?.id ?? root);
+    if (byGetPlayer) return byGetPlayer as VideoJS.Player<T>;
+
+    const players = vjs?.getPlayers?.() ?? vjs?.players;
+    if (players && typeof players === "object") {
+      for (const p of Object.values(players)) {
+        if (p) return p as VideoJS.Player<T>;
+      }
+    }
+
+    return undefined;
   }
 
   getVideoDataByPlayer(videoId: string) {
