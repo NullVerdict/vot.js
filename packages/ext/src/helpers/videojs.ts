@@ -13,7 +13,7 @@ export default class VideoJSHelper extends BaseHelper {
   SUBTITLE_FORMAT = "vtt";
 
   static getPlayer<T extends VideoJS.PlayerOptions = VideoJS.PlayerOptions>() {
-    return document.querySelector<VideoJS.PlayerElement<T>>(".video-js")
+    return document.querySelector<VideoJS.PlayerElement<T>>(".video-js, vjs-tech")
       ?.player;
   }
 
