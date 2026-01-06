@@ -93,13 +93,22 @@ export default class NiconicoHelper extends BaseHelper {
     const host = url.hostname.toLowerCase();
     const path = url.pathname;
 
+    // Short links: https://nico.ms/sm9
     if (host === "nico.ms") {
       const id = path.replace(/^\/+/, "").split("/")[0];
-      return id || undefined;
+      const cleaned = decodeURIComponent(id ?? "").trim();
+      return /^(?:[a-z]{2})?\d+$/i.test(cleaned) ? cleaned.toLowerCase() : undefined;
     }
 
+    // Standard watch URLs: https://www.nicovideo.jp/watch/sm9
+    // Embed URLs: https://embed.nicovideo.jp/watch/sm9
     const m = path.match(/\/watch\/([^/?#]+)/i);
-    return m?.[1] || undefined;
+    const candidate = decodeURIComponent(
+      (m?.[1] ?? url.searchParams.get("v") ?? url.searchParams.get("video_id") ?? "").trim(),
+    );
+
+    // Align with yt-dlp: (?P<id>(?:[a-z]{2})?\d+)
+    return /^(?:[a-z]{2})?\d+$/i.test(candidate) ? candidate.toLowerCase() : undefined;
   }
 
   private async fetchJson<T>(url: string, init?: any): Promise<T> {

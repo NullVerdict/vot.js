@@ -154,7 +154,7 @@ export default [
   {
     host: CoreVideoService.niconico,
     url: "https://www.nicovideo.jp/watch/",
-    match: [/^(?:www\.|secure\.|sp\.)?nicovideo\.jp$/, /^nico\.ms$/],
+    match: [/^(?:www\.|secure\.|sp\.|embed\.)?nicovideo\.jp$/, /^nico\.ms$/],
     needExtraData: true,
   },
   {
