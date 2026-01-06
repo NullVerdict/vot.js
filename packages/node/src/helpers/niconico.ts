@@ -89,27 +89,68 @@ function pickBestBy<T>(items: T[], score: (t: T) => number): T | undefined {
 }
 
 export default class NiconicoHelper extends BaseHelper {
-  async getVideoId(url: URL): Promise<string | undefined> {
-    const host = url.hostname.toLowerCase();
-    const path = url.pathname;
+    async getVideoId(url: URL): Promise<string | undefined> {
+      const normalize = (raw?: string | null): string | undefined => {
+        const s = (raw ?? "").trim();
+        if (!s) return undefined;
+        let decoded = s;
+        try {
+          decoded = decodeURIComponent(s);
+        } catch {
+          // ignore malformed URI sequences
+        }
+        decoded = decoded.trim();
+        return /^(?:[a-z]{2})?\d+$/i.test(decoded) ? decoded.toLowerCase() : undefined;
+      };
 
-    // Short links: https://nico.ms/sm9
-    if (host === "nico.ms") {
-      const id = path.replace(/^\/+/, "").split("/")[0];
-      const cleaned = decodeURIComponent(id ?? "").trim();
-      return /^(?:[a-z]{2})?\d+$/i.test(cleaned) ? cleaned.toLowerCase() : undefined;
+      const tryParse = (u: URL): string | undefined => {
+        const host = u.hostname.toLowerCase();
+        const href = u.href;
+        const path = u.pathname;
+
+        // Short links: https://nico.ms/sm9
+        if (host === "nico.ms") {
+          const id = path.replace(/^\/+/, "").split("/")[0];
+          return normalize(id);
+        }
+
+        // Standard watch URLs: https://www.nicovideo.jp/watch/sm9
+        // Embed URLs: https://embed.nicovideo.jp/watch/sm9
+        const m = path.match(/\/watch\/([^/?#]+)/i);
+        const fromPath = normalize(m?.[1]);
+        if (fromPath) return fromPath;
+
+        // Fallback: scan the full URL (in case the helper is called from an iframe or a rewritten URL)
+        const m2 = href.match(/(?:\/watch\/|nico\.ms\/)([^/?#&]+)/i);
+        const fromHref = normalize(m2?.[1]);
+        if (fromHref) return fromHref;
+
+        // Query parameters used by some embeds
+        const fromQuery = normalize(
+          u.searchParams.get("v") ?? u.searchParams.get("video_id") ?? u.searchParams.get("id"),
+        );
+        if (fromQuery) return fromQuery;
+
+        return undefined;
+      };
+
+      // 1) Try the current URL
+      const direct = tryParse(url);
+      if (direct) return direct;
+
+      // 2) If we are inside an iframe, the watch page URL is often in the referrer
+      if (this.referer) {
+        try {
+          const ref = new URL(this.referer);
+          const fromRef = tryParse(ref);
+          if (fromRef) return fromRef;
+        } catch {
+          // ignore invalid referrer
+        }
+      }
+
+      return undefined;
     }
-
-    // Standard watch URLs: https://www.nicovideo.jp/watch/sm9
-    // Embed URLs: https://embed.nicovideo.jp/watch/sm9
-    const m = path.match(/\/watch\/([^/?#]+)/i);
-    const candidate = decodeURIComponent(
-      (m?.[1] ?? url.searchParams.get("v") ?? url.searchParams.get("video_id") ?? "").trim(),
-    );
-
-    // Align with yt-dlp: (?P<id>(?:[a-z]{2})?\d+)
-    return /^(?:[a-z]{2})?\d+$/i.test(candidate) ? candidate.toLowerCase() : undefined;
-  }
 
   private async fetchJson<T>(url: string, init?: any): Promise<T> {
     const res = await this.fetch(url, init);
