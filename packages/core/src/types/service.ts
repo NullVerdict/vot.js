@@ -26,8 +26,6 @@ export enum VideoService {
   eporner = "eporner",
   peertube = "peertube",
   dailymotion = "dailymotion",
-  niconico = "niconico",
-  arte = "arte",
   trovo = "trovo",
   yandexdisk = "yandexdisk",
   ok_ru = "okru",
