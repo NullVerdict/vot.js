@@ -17,6 +17,16 @@ type DmcSessionResponse = {
   data?: { session?: { content_uri?: string } };
 };
 
+type DmcSource = {
+  id?: string;
+  isAvailable?: boolean;
+  metadata?: {
+    bitrate?: number;
+    resolution?: { height?: number; width?: number };
+  };
+};
+
+
 const FRONTEND_ID = "6";
 const FRONTEND_VERSION = "0";
 const BASE_URL = "https://www.nicovideo.jp";
@@ -182,11 +192,11 @@ export default class NiconicoHelper extends BaseHelper {
 
     if (!movie || !sessionApiData || !sessionEndpoint) return undefined;
 
-    const videos = Array.isArray(movie?.videos)
-      ? movie.videos.filter((v: any) => v?.isAvailable && v?.id)
+    const videos: DmcSource[] = Array.isArray(movie?.videos)
+      ? (movie.videos as any[]).filter((v: any) => v?.isAvailable && v?.id)
       : [];
-    const audios = Array.isArray(movie?.audios)
-      ? movie.audios.filter((a: any) => a?.isAvailable && a?.id)
+    const audios: DmcSource[] = Array.isArray(movie?.audios)
+      ? (movie.audios as any[]).filter((a: any) => a?.isAvailable && a?.id)
       : [];
 
     const bestVideo = pickBestBy(
