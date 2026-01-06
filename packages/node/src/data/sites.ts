@@ -150,6 +150,19 @@ export default [
     url: "https://dai.ly/",
     match: /^(www.)?dailymotion.com|dai.ly$/,
   },
+
+  {
+    host: CoreVideoService.niconico,
+    url: "https://www.nicovideo.jp/watch/",
+    match: [/^(?:www\.|secure\.|sp\.)?nicovideo\.jp$/, /^nico\.ms$/],
+    needExtraData: true,
+  },
+  {
+    host: CoreVideoService.arte,
+    url: "https://www.arte.tv/",
+    match: /(^|\.)arte\.tv$/,
+    needExtraData: true,
+  },
   {
     host: CoreVideoService.trovo,
     url: "https://trovo.live/s/",

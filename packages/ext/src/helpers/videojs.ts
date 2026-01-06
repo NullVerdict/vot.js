@@ -118,7 +118,7 @@ const subtitles: VideoDataSubtitle[] = trackEls
 
       return {
         url,
-        duration: duration ?? 0,
+        duration,
         subtitles,
       };
     } catch (err) {

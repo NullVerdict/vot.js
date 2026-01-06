@@ -248,6 +248,20 @@ export default [
     selector: ".player",
   },
   {
+    host: CoreVideoService.niconico,
+    url: "https://www.nicovideo.jp/watch/",
+    match: [/^(?:www\.|secure\.|sp\.)?nicovideo\.jp$/, /^nico\.ms$/],
+    selector: "video",
+    needExtraData: true,
+  },
+  {
+    host: CoreVideoService.arte,
+    url: "https://www.arte.tv/",
+    match: /(^|\.)arte\.tv$/,
+    selector: "video",
+    needExtraData: true,
+  },
+  {
     host: CoreVideoService.trovo,
     url: "https://trovo.live/s/",
     match: /^trovo.live$/,

@@ -1,31 +1,19 @@
-import type { MinimalVideoData } from "../types/client";
 import { BaseHelper, VideoHelperError } from "./base";
+import type { MinimalVideoData } from "../types/client";
 
 import Logger from "@vot.js/shared/utils/logger";
 
 export default class RedditHelper extends BaseHelper {
   API_ORIGIN = "https://www.reddit.com";
 
-  // eslint-disable-next-line @typescript-eslint/require-await
-  async getContentUrl(_videoId: string) {
-    if (this.service?.additionalData !== "old") {
-      const player = document.querySelector<HTMLElement>(
-        "shreddit-player-2, shreddit-player",
-      );
+  async getContentUrl(videoId: string) {
+    const res = await this.fetch(`${this.API_ORIGIN}/r/${videoId}`);
+    const content = await res.text();
 
-      const src =
-        player?.getAttribute("src") ??
-        player
-          ?.querySelector<HTMLSourceElement>(
-            'source[type="application/vnd.apple.mpegURL"]',
-          )
-          ?.getAttribute("src");
-
-      return src?.replaceAll("&amp;", "&");
-    }
-
-    const playerEl = document.querySelector<HTMLElement>("[data-hls-url]");
-    return playerEl?.dataset.hlsUrl?.replaceAll("&amp;", "&");
+    // get m3u8 from player
+    return /https:\/\/v\.redd\.it\/([^/]+)\/HLSPlaylist\.m3u8\?([^"]+)/
+      .exec(content)?.[0]
+      ?.replaceAll("&amp;", "&");
   }
 
   async getVideoData(videoId: string): Promise<MinimalVideoData | undefined> {
@@ -38,7 +26,7 @@ export default class RedditHelper extends BaseHelper {
       return {
         url: decodeURIComponent(contentUrl),
       };
-    } catch (err) {
+    } catch (err: unknown) {
       Logger.error(
         `Failed to get reddit video data by video ID: ${videoId}`,
         (err as Error).message,

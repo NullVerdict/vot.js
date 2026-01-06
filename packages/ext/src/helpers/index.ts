@@ -5,6 +5,7 @@ import { ExtVideoService, type ServiceConf } from "../types/service";
 
 import AppleDeveloperHelper from "./appledeveloper";
 import ArchiveHelper from "./archive";
+import ArteHelper from "./arte";
 import ArtstationHelper from "./artstation";
 import BannedVideoHelper from "./bannedvideo";
 import BilibiliHelper from "./bilibili";
@@ -34,6 +35,7 @@ import LoomHelper from "./loom";
 import MailRuHelper from "./mailru";
 import NetacadHelper from "./netacad";
 import NewgroundsHelper from "./newgrounds";
+import NiconicoHelper from "./niconico";
 import NineGAGHelper from "./nine_gag";
 import OdyseeHelper from "./odysee";
 import OKRuHelper from "./okru";
@@ -88,10 +90,12 @@ export * as BilibiliHelper from "./bilibili";
 export * as XVideosHelper from "./xvideos";
 export * as WatchPornToHelper from "./watchpornto";
 export * as ArchiveHelper from "./archive";
+export * as ArteHelper from "./arte";
 export * as DailymotionHelper from "./dailymotion";
 export * as YoukuHelper from "./youku";
 export * as EggheadHelper from "./egghead";
 export * as NewgroundsHelper from "./newgrounds";
+export * as NiconicoHelper from "./niconico";
 export * as OKRuHelper from "./okru";
 export * as PeertubeHelper from "./peertube";
 export * as EpornerHelper from "./eporner";
@@ -166,6 +170,8 @@ export const availableHelpers = {
   [CoreVideoService.tiktok]: TikTokHelper,
   [CoreVideoService.proxitok]: TikTokHelper,
   [CoreVideoService.nine_gag]: NineGAGHelper,
+  [CoreVideoService.niconico]: NiconicoHelper,
+  [CoreVideoService.arte]: ArteHelper,
   [CoreVideoService.youtube]: YoutubeHelper,
   [CoreVideoService.ricktube]: YoutubeHelper,
   [CoreVideoService.invidious]: YoutubeHelper,

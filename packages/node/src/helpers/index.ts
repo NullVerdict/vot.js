@@ -80,10 +80,12 @@ export * as BilibiliHelper from "./bilibili";
 export * as XVideosHelper from "./xvideos";
 export * as WatchPornToHelper from "./watchpornto";
 export * as ArchiveHelper from "./archive";
+export * as ArteHelper from "./arte";
 export * as DailymotionHelper from "./dailymotion";
 export * as YoukuHelper from "./youku";
 export * as EggheadHelper from "./egghead";
 export * as NewgroundsHelper from "./newgrounds";
+export * as NiconicoHelper from "./niconico";
 export * as OKRuHelper from "./okru";
 export * as PeertubeHelper from "./peertube";
 export * as EpornerHelper from "./eporner";
@@ -106,6 +108,9 @@ export * as IgnHelper from "./ign";
 export * as BunkrHelper from "./bunkr";
 export * as IMDBHelper from "./imdb";
 export * as TelegramHelper from "./telegram";
+
+import NiconicoHelper from "./niconico";
+import ArteHelper from "./arte";
 
 export const availableHelpers = {
   [CoreVideoService.mailru]: MailRuHelper,
@@ -134,6 +139,8 @@ export const availableHelpers = {
   [CoreVideoService.watchpornto]: WatchPornToHelper,
   [CoreVideoService.archive]: ArchiveHelper,
   [CoreVideoService.dailymotion]: DailymotionHelper,
+  [CoreVideoService.niconico]: NiconicoHelper,
+  [CoreVideoService.arte]: ArteHelper,
   [CoreVideoService.youku]: YoukuHelper,
   [CoreVideoService.egghead]: EggheadHelper,
   [CoreVideoService.newgrounds]: NewgroundsHelper,
