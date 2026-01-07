@@ -62,6 +62,11 @@ export enum VideoService {
   ign = "ign",
   bunkr = "bunkr",
   imdb = "imdb",
+  naver_tv = "naver_tv",
+  navertv = naver_tv,
+  niconico = "niconico",
+  arte_tv = "arte_tv",
+  artetv = arte_tv,
   telegram = "telegram",
 }
 

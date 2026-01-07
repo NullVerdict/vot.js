@@ -47,6 +47,9 @@ import RtNewsHelper from "./rtnews";
 import RumbleHelper from "./rumble";
 import RutubeHelper from "./rutube";
 import SapHelper from "./sap";
+import NaverTVHelper from "./naver_tv";
+import NicoNicoHelper from "./niconico";
+import ArteTVHelper from "./arte_tv";
 import TelegramHelper from "./telegram";
 import ThisVidHelper from "./thisvid";
 import TikTokHelper from "./tiktok";
@@ -119,6 +122,9 @@ export * as ThisVidHelper from "./thisvid";
 export * as IgnHelper from "./ign";
 export * as BunkrHelper from "./bunkr";
 export * as IMDBHelper from "./imdb";
+export * as NaverTVHelper from "./naver_tv";
+export * as NicoNicoHelper from "./niconico";
+export * as ArteTVHelper from "./arte_tv";
 export * as TelegramHelper from "./telegram";
 export * as OracleLearnHelper from "./oraclelearn";
 export * as DeeplearningAIHelper from "./deeplearningai";
@@ -180,6 +186,9 @@ export const availableHelpers = {
   [CoreVideoService.ign]: IgnHelper,
   [CoreVideoService.bunkr]: BunkrHelper,
   [CoreVideoService.imdb]: IMDBHelper,
+    [CoreVideoService.naver_tv]: NaverTVHelper,
+  [CoreVideoService.niconico]: NicoNicoHelper,
+  [CoreVideoService.arte_tv]: ArteTVHelper,
   [CoreVideoService.telegram]: TelegramHelper,
   [ExtVideoService.udemy]: UdemyHelper,
   [ExtVideoService.coursera]: CourseraHelper,

@@ -340,6 +340,22 @@ export default [
     url: "https://www.imdb.com/video/",
     match: /^(www.)?imdb.com$/,
   },
+
+  {
+    host: CoreVideoService.naver_tv,
+    url: "https://tv.naver.com/",
+    match: /(^|\.)tv(?:cast)?\.naver\.com$/,
+  },
+  {
+    host: CoreVideoService.niconico,
+    url: "https://www.nicovideo.jp/watch/",
+    match: /(^|\.)nicovideo\.jp$|(^|\.)nico\.ms$/,
+  },
+  {
+    host: CoreVideoService.arte_tv,
+    url: "https://www.arte.tv/",
+    match: /(^|\.)arte\.tv$/,
+  },
   {
     host: CoreVideoService.telegram,
     url: "https://t.me/",

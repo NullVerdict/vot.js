@@ -514,6 +514,25 @@ export default [
     needExtraData: true,
     selector: ".plyr__video-wrapper",
   },
+
+  {
+    host: CoreVideoService.naver_tv,
+    url: "https://tv.naver.com/",
+    match: /(^|\.)tv(?:cast)?\.naver\.com$/,
+    selector: "video",
+  },
+  {
+    host: CoreVideoService.niconico,
+    url: "https://www.nicovideo.jp/watch/",
+    match: /(^|\.)nicovideo\.jp$|(^|\.)nico\.ms$/,
+    selector: "video",
+  },
+  {
+    host: CoreVideoService.arte_tv,
+    url: "https://www.arte.tv/",
+    match: /(^|\.)arte\.tv$/,
+    selector: "video",
+  },
   {
     host: CoreVideoService.imdb,
     url: "https://www.imdb.com/video/",
