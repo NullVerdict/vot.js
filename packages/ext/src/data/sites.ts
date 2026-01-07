@@ -4,9 +4,7 @@ import {
   sitesInvidious,
   sitesPeertube,
   sitesPiped,
-  sitesPoketube,
   sitesProxiTok,
-  sitesRicktube,
 } from "@vot.js/shared/alternativeUrls";
 
 import { ExtVideoService, type ServiceConf } from "../types/service";
@@ -40,18 +38,6 @@ export default [
     match: sitesPiped,
     selector: ".shaka-video-container",
     needBypassCSP: true,
-  },
-  {
-    host: CoreVideoService.poketube,
-    url: "https://youtu.be/",
-    match: sitesPoketube,
-    selector: ".video-player-container",
-  },
-  {
-    host: CoreVideoService.ricktube,
-    url: "https://youtu.be/",
-    match: sitesRicktube,
-    selector: "#oframeplayer > pjsdiv:has(video)",
   },
   {
     additionalData: "mobile",
@@ -238,14 +224,28 @@ export default [
   {
     host: CoreVideoService.peertube,
     url: "stub",
-    match: sitesPeertube,
+    match: (url: URL) => {
+      const host = url.hostname;
+      const isKnown = sitesPeertube.some(
+        (h) => host === h || host.endsWith(`.${h}`) || host.includes(h),
+      );
+      if (isKnown) return true;
+
+      // Common PeerTube URL shapes:
+      //  - /w/<id>
+      //  - /videos/watch/<uuid>
+      //  - /videos/embed/<uuid>
+      return /^(?:\/w\/[^/]+|\/videos\/(?:watch|embed)\/[^/]+)/.test(
+        url.pathname,
+      );
+    },
     selector: ".vjs-v7",
   },
   {
     host: CoreVideoService.dailymotion,
     url: "https://dai.ly/",
-    match: /^geo([\d]+)?.dailymotion.com$/,
-    selector: ".player",
+    match: /(^|\.)dailymotion\.com$|^dai\.ly$/,
+    selector: "video, .player",
   },
   {
     host: CoreVideoService.trovo,
@@ -516,24 +516,6 @@ export default [
   },
 
   {
-    host: CoreVideoService.naver_tv,
-    url: "https://tv.naver.com/",
-    // Naver videos can be served from multiple subdomains (tv, tvcast, sports.news)
-    // and may redirect to m.naver.com/shorts. Use a predicate to avoid matching
-    // arbitrary naver.com pages.
-    match: (url: URL) => {
-      if (!/(^|\.)naver\.com$/.test(url.hostname)) return false;
-      if (/^\/(v|embed|l|h)\/\d+/.test(url.pathname)) return true;
-      if (url.pathname.startsWith("/shorts")) return true;
-      return (
-        url.searchParams.has("clipNo") ||
-        url.searchParams.has("clipno") ||
-        url.searchParams.has("clip_no")
-      );
-    },
-    selector: "video",
-  },
-  {
     host: CoreVideoService.niconico,
     url: "https://www.nicovideo.jp/watch/",
     match: /(^|\.)nicovideo\.jp$|(^|\.)nico\.ms$/,
@@ -542,11 +524,19 @@ export default [
     selector: "#MainVideoPlayer",
   },
   {
-    host: CoreVideoService.arte_tv,
-    url: "https://www.arte.tv/",
-    match: /(^|\.)arte\.tv$/,
-    // ARTE uses Video.js; prefer the Video.js root element for overlays.
-    selector: ".video-js, video-js, .vjs-player, video",
+    host: CoreVideoService.zdf,
+    url: "https://www.zdf.de",
+    match: /(^|\.)zdf\.de$/,
+    selector: "video",
+  },
+  {
+    host: CoreVideoService.pixeldrain,
+    url: "https://pixeldrain.com/api/",
+    match: (url: URL) =>
+      url.hostname === "pixeldrain.com" &&
+      (/^\/u\/[\w-]+/.test(url.pathname) ||
+        /^\/api\/file\/[\w-]+/.test(url.pathname)),
+    selector: "video",
   },
   {
     host: CoreVideoService.imdb,

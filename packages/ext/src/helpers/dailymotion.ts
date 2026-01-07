@@ -2,16 +2,24 @@ import { BaseHelper } from "./base";
 
 export default class DailymotionHelper extends BaseHelper {
   // eslint-disable-next-line @typescript-eslint/require-await
-  async getVideoId(_url: URL) {
-    // geo.dailymotion.com
-    const plainPlayerConfig = Array.from(document.querySelectorAll("*")).filter(
-      (s) => s.innerHTML.trim().includes(".m3u8"),
-    );
+  async getVideoId(url: URL) {
+    // Supported URL shapes (examples):
+    //  - https://dai.ly/<video-id>
+    //  - https://www.dailymotion.com/video/<video-id>_<slug>
+    //  - https://www.dailymotion.com/embed/video/<video-id>
+    //  - https://www.dailymotion.com/hub/<hub-id>#video=<video-id>
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    const videoUrl = (plainPlayerConfig?.[1]?.lastChild as any)?.src as
-      | string
-      | undefined;
-    return videoUrl ? /\/video\/(\w+)\.m3u8/.exec(videoUrl)?.[1] : undefined;
+    const fromHash = /(?:^|[&#])video=([^&#_]+)/.exec(url.hash)?.[1];
+    if (fromHash) return fromHash;
+
+    const raw =
+      url.hostname === "dai.ly"
+        ? url.pathname.replace(/^\//, "")
+        : /\/video\/([^/?#]+)/.exec(url.pathname)?.[1] ||
+          /\/embed\/video\/([^/?#]+)/.exec(url.pathname)?.[1];
+
+    if (!raw) return undefined;
+    // Dailymotion often appends a slug after an underscore
+    return raw.split("_")[0];
   }
 }

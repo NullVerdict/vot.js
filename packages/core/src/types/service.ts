@@ -43,14 +43,12 @@ export enum VideoService {
   kick = "kick",
   apple_developer = "apple_developer",
   appledeveloper = apple_developer,
-  poketube = "poketube",
   epicgames = "epicgames",
   odysee = "odysee",
   coursehunterLike = "coursehunterLike",
   sap = "sap",
   watchpornto = "watchpornto",
   linkedin = "linkedin",
-  ricktube = "ricktube",
   incestflix = "incestflix",
   porntn = "porntn",
   dzen = "dzen",
@@ -62,12 +60,12 @@ export enum VideoService {
   ign = "ign",
   bunkr = "bunkr",
   imdb = "imdb",
-  naver_tv = "naver_tv",
-  navertv = naver_tv,
   niconico = "niconico",
-  arte_tv = "arte_tv",
-  artetv = arte_tv,
   telegram = "telegram",
+
+  // New services
+  zdf = "zdf",
+  pixeldrain = "pixeldrain",
 }
 
 export type ServiceConf<T extends string = VideoService> = {

@@ -82,9 +82,6 @@ export async function getVideoData(
       CoreVideoService.peertube,
       CoreVideoService.coursehunterLike,
       CoreVideoService.cloudflarestream,
-      // Naver can be tv.naver.com, tvcast.naver.com, sports.news.naver.com
-      // or m.naver.com/shorts. Use current origin to construct a valid URL.
-      CoreVideoService.naver_tv,
     ].includes(service.host)
   ) {
     service.url = origin; // set the url of the current site for peertube

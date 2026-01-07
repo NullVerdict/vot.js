@@ -4,8 +4,6 @@ import {
   sitesPiped,
   sitesProxiTok,
   sitesPeertube,
-  sitesPoketube,
-  sitesRicktube,
   sitesCoursehunterLike,
 } from "@vot.js/shared/alternativeUrls";
 
@@ -28,18 +26,6 @@ export default [
     host: CoreVideoService.piped,
     url: "https://youtu.be/",
     match: sitesPiped,
-  },
-  {
-    // Sites host Poketube. I tested the performance only on poketube.fun
-    host: CoreVideoService.poketube,
-    url: "https://youtu.be/",
-    match: sitesPoketube,
-  },
-  {
-    // Sites host Ricktube
-    host: CoreVideoService.ricktube,
-    url: "https://youtu.be/",
-    match: sitesRicktube,
   },
   {
     host: CoreVideoService.vk,
@@ -143,12 +129,28 @@ export default [
   {
     host: CoreVideoService.peertube,
     url: "stub", // This is a stub. The present value is set using origin url
-    match: sitesPeertube,
+    // Allow any PeerTube instance (not only the curated list) by detecting
+    // typical PeerTube watch/embed URL patterns.
+    match: (url: URL) => {
+      const host = url.hostname;
+      const isKnown = sitesPeertube.some(
+        (h) => host === h || host.endsWith(`.${h}`) || host.includes(h),
+      );
+      if (isKnown) return true;
+
+      // Common PeerTube URL shapes:
+      //  - /w/<id>
+      //  - /videos/watch/<uuid>
+      //  - /videos/embed/<uuid>
+      return /^(?:\/w\/[^/]+|\/videos\/(?:watch|embed)\/[^/]+)/.test(
+        url.pathname,
+      );
+    },
   },
   {
     host: CoreVideoService.dailymotion,
     url: "https://dai.ly/",
-    match: /^(www.)?dailymotion.com|dai.ly$/,
+    match: /(^|\.)dailymotion\.com$|^dai\.ly$/,
   },
   {
     host: CoreVideoService.trovo,
@@ -342,31 +344,23 @@ export default [
   },
 
   {
-    host: CoreVideoService.naver_tv,
-    url: "https://tv.naver.com/",
-    // Naver videos can be served from multiple subdomains (tv, tvcast, sports.news)
-    // and may redirect to m.naver.com/shorts. Use a predicate to avoid matching
-    // arbitrary naver.com pages.
-    match: (url: URL) => {
-      if (!/(^|\.)naver\.com$/.test(url.hostname)) return false;
-      if (/^\/(v|embed|l|h)\/\d+/.test(url.pathname)) return true;
-      if (url.pathname.startsWith("/shorts")) return true;
-      return (
-        url.searchParams.has("clipNo") ||
-        url.searchParams.has("clipno") ||
-        url.searchParams.has("clip_no")
-      );
-    },
-  },
-  {
     host: CoreVideoService.niconico,
     url: "https://www.nicovideo.jp/watch/",
     match: /(^|\.)nicovideo\.jp$|(^|\.)nico\.ms$/,
   },
   {
-    host: CoreVideoService.arte_tv,
-    url: "https://www.arte.tv/",
-    match: /(^|\.)arte\.tv$/,
+    host: CoreVideoService.zdf,
+    url: "https://www.zdf.de",
+    match: /(^|\.)zdf\.de$/,
+  },
+  {
+    host: CoreVideoService.pixeldrain,
+    url: "https://pixeldrain.com/api/",
+    // Only match actual file URLs to avoid catching account/settings pages.
+    match: (url: URL) =>
+      url.hostname === "pixeldrain.com" &&
+      (/^\/u\/[\w-]+/.test(url.pathname) ||
+        /^\/api\/file\/[\w-]+/.test(url.pathname)),
   },
   {
     host: CoreVideoService.telegram,

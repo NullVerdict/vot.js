@@ -53,10 +53,10 @@ import ThisVidHelper from "./thisvid";
 import IgnHelper from "./ign";
 import BunkrHelper from "./bunkr";
 import IMDBHelper from "./imdb";
-import NaverTVHelper from "./naver_tv";
 import NicoNicoHelper from "./niconico";
-import ArteTVHelper from "./arte_tv";
 import TelegramHelper from "./telegram";
+import ZdfHelper from "./zdf";
+import PixeldrainHelper from "./pixeldrain";
 
 export * as MailRuHelper from "./mailru";
 export * as WeverseHelper from "./weverse";
@@ -108,10 +108,10 @@ export * as ThisVidHelper from "./thisvid";
 export * as IgnHelper from "./ign";
 export * as BunkrHelper from "./bunkr";
 export * as IMDBHelper from "./imdb";
-export * as NaverTVHelper from "./naver_tv";
 export * as NicoNicoHelper from "./niconico";
-export * as ArteTVHelper from "./arte_tv";
 export * as TelegramHelper from "./telegram";
+export * as ZdfHelper from "./zdf";
+export * as PixeldrainHelper from "./pixeldrain";
 
 export const availableHelpers = {
   [CoreVideoService.mailru]: MailRuHelper,
@@ -156,9 +156,7 @@ export const availableHelpers = {
   [CoreVideoService.proxitok]: TikTokHelper,
   [CoreVideoService.nine_gag]: NineGAGHelper,
   [CoreVideoService.youtube]: YoutubeHelper,
-  [CoreVideoService.ricktube]: YoutubeHelper,
   [CoreVideoService.invidious]: YoutubeHelper,
-  [CoreVideoService.poketube]: YoutubeHelper,
   [CoreVideoService.piped]: YoutubeHelper,
   [CoreVideoService.dzen]: DzenHelper,
   [CoreVideoService.cloudflarestream]: CloudflareStreamHelper,
@@ -169,10 +167,10 @@ export const availableHelpers = {
   [CoreVideoService.ign]: IgnHelper,
   [CoreVideoService.bunkr]: BunkrHelper,
   [CoreVideoService.imdb]: IMDBHelper,
-    [CoreVideoService.naver_tv]: NaverTVHelper,
   [CoreVideoService.niconico]: NicoNicoHelper,
-  [CoreVideoService.arte_tv]: ArteTVHelper,
   [CoreVideoService.telegram]: TelegramHelper,
+  [CoreVideoService.zdf]: ZdfHelper,
+  [CoreVideoService.pixeldrain]: PixeldrainHelper,
 };
 
 export type AvailableVideoHelpers = typeof availableHelpers;

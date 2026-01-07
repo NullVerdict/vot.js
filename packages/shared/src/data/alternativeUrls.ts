@@ -80,17 +80,6 @@ const sitesPeertube = [
   "makertube.net",
 ] as const;
 
-// Sites host Poketube. I tested the performance only on poketube.fun
-const sitesPoketube = [
-  "poketube.fun",
-  "pt.sudovanilla.org",
-  "poke.ggtyler.dev",
-  "poke.uk2.littlekai.co.uk",
-  "poke.blahai.gay",
-] as const;
-
-const sitesRicktube = ["ricktube.ru"] as const;
-
 const sitesMaterialious = [
   "materialious.nadeko.net",
   "app.materialio.us",
@@ -104,8 +93,6 @@ export {
   sitesPiped,
   sitesProxiTok,
   sitesPeertube,
-  sitesPoketube,
-  sitesRicktube,
   sitesMaterialious,
   sitesCoursehunterLike,
 };
