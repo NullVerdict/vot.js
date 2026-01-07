@@ -65,7 +65,6 @@ export enum VideoService {
 
   // New services
   zdf = "zdf",
-  pixeldrain = "pixeldrain",
 }
 
 export type ServiceConf<T extends string = VideoService> = {

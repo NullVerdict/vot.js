@@ -245,7 +245,8 @@ export default [
     host: CoreVideoService.dailymotion,
     url: "https://dai.ly/",
     match: /(^|\.)dailymotion\.com$|^dai\.ly$/,
-    selector: "video, .player",
+    // Dailymotion's player often uses a dedicated <video id="dmp_Video"> element.
+    selector: "#dmp_Video, video, .player",
   },
   {
     host: CoreVideoService.trovo,
@@ -527,16 +528,9 @@ export default [
     host: CoreVideoService.zdf,
     url: "https://www.zdf.de",
     match: /(^|\.)zdf\.de$/,
-    selector: "video",
-  },
-  {
-    host: CoreVideoService.pixeldrain,
-    url: "https://pixeldrain.com/api/",
-    match: (url: URL) =>
-      url.hostname === "pixeldrain.com" &&
-      (/^\/u\/[\w-]+/.test(url.pathname) ||
-        /^\/api\/file\/[\w-]+/.test(url.pathname)),
-    selector: "video",
+    // ZDF Mediathek uses the "ngplayer" container (e.g. ngplayer_2_5)
+    // and the <video> element may be created lazily.
+    selector: "#ngplayer_2_5, [id^='ngplayer_'], .ngplayer, video",
   },
   {
     host: CoreVideoService.imdb,

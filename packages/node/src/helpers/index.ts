@@ -56,7 +56,6 @@ import IMDBHelper from "./imdb";
 import NicoNicoHelper from "./niconico";
 import TelegramHelper from "./telegram";
 import ZdfHelper from "./zdf";
-import PixeldrainHelper from "./pixeldrain";
 
 export * as MailRuHelper from "./mailru";
 export * as WeverseHelper from "./weverse";
@@ -111,7 +110,6 @@ export * as IMDBHelper from "./imdb";
 export * as NicoNicoHelper from "./niconico";
 export * as TelegramHelper from "./telegram";
 export * as ZdfHelper from "./zdf";
-export * as PixeldrainHelper from "./pixeldrain";
 
 export const availableHelpers = {
   [CoreVideoService.mailru]: MailRuHelper,
@@ -170,7 +168,6 @@ export const availableHelpers = {
   [CoreVideoService.niconico]: NicoNicoHelper,
   [CoreVideoService.telegram]: TelegramHelper,
   [CoreVideoService.zdf]: ZdfHelper,
-  [CoreVideoService.pixeldrain]: PixeldrainHelper,
 };
 
 export type AvailableVideoHelpers = typeof availableHelpers;

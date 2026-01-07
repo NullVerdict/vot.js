@@ -354,15 +354,6 @@ export default [
     match: /(^|\.)zdf\.de$/,
   },
   {
-    host: CoreVideoService.pixeldrain,
-    url: "https://pixeldrain.com/api/",
-    // Only match actual file URLs to avoid catching account/settings pages.
-    match: (url: URL) =>
-      url.hostname === "pixeldrain.com" &&
-      (/^\/u\/[\w-]+/.test(url.pathname) ||
-        /^\/api\/file\/[\w-]+/.test(url.pathname)),
-  },
-  {
     host: CoreVideoService.telegram,
     url: "https://t.me/",
     match: /^t.me$/,

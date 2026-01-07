@@ -50,7 +50,6 @@ import SapHelper from "./sap";
 import NicoNicoHelper from "./niconico";
 import TelegramHelper from "./telegram";
 import ZdfHelper from "./zdf";
-import PixeldrainHelper from "./pixeldrain";
 import ThisVidHelper from "./thisvid";
 import TikTokHelper from "./tiktok";
 import TrovoHelper from "./trovo";
@@ -125,7 +124,6 @@ export * as IMDBHelper from "./imdb";
 export * as NicoNicoHelper from "./niconico";
 export * as TelegramHelper from "./telegram";
 export * as ZdfHelper from "./zdf";
-export * as PixeldrainHelper from "./pixeldrain";
 export * as OracleLearnHelper from "./oraclelearn";
 export * as DeeplearningAIHelper from "./deeplearningai";
 export * as NetacadHelper from "./netacad";
@@ -187,7 +185,6 @@ export const availableHelpers = {
   [CoreVideoService.niconico]: NicoNicoHelper,
   [CoreVideoService.telegram]: TelegramHelper,
   [CoreVideoService.zdf]: ZdfHelper,
-  [CoreVideoService.pixeldrain]: PixeldrainHelper,
   [ExtVideoService.udemy]: UdemyHelper,
   [ExtVideoService.coursera]: CourseraHelper,
   [ExtVideoService.douyin]: DouyinHelper,
