@@ -344,7 +344,19 @@ export default [
   {
     host: CoreVideoService.naver_tv,
     url: "https://tv.naver.com/",
-    match: /(^|\.)tv(?:cast)?\.naver\.com$/,
+    // Naver videos can be served from multiple subdomains (tv, tvcast, sports.news)
+    // and may redirect to m.naver.com/shorts. Use a predicate to avoid matching
+    // arbitrary naver.com pages.
+    match: (url: URL) => {
+      if (!/(^|\.)naver\.com$/.test(url.hostname)) return false;
+      if (/^\/(v|embed|l|h)\/\d+/.test(url.pathname)) return true;
+      if (url.pathname.startsWith("/shorts")) return true;
+      return (
+        url.searchParams.has("clipNo") ||
+        url.searchParams.has("clipno") ||
+        url.searchParams.has("clip_no")
+      );
+    },
   },
   {
     host: CoreVideoService.niconico,
