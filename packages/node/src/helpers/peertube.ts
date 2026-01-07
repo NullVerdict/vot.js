@@ -8,7 +8,7 @@ import BaseHelper from "./base";
  * so we send the full URL as videoId (backend can pass it directly).
  */
 export default class PeertubeHelper extends BaseHelper {
-  getVideoId(url: URL): string {
+  async getVideoId(url: URL): Promise<string | undefined> {
     if (!/^https?:$/i.test(url.protocol)) {
       throw new BaseHelperError("Invalid PeerTube URL");
     }

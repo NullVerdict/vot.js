@@ -1,6 +1,4 @@
 import type { MinimalVideoData } from "@vot.js/core/types/helpers/base";
-
-import { BaseHelperError } from "./base";
 import BaseHelper from "./base";
 
 function extractIdFromUrl(url: URL): string | undefined {
@@ -26,7 +24,7 @@ function looksLikeVideoId(id: string): boolean {
 }
 
 export default class DailymotionHelper extends BaseHelper {
-  getVideoId(url: URL): string {
+  async getVideoId(url: URL): Promise<string | undefined> {
     // 1) Direct URL patterns
     const direct = extractIdFromUrl(url);
     if (direct && looksLikeVideoId(direct)) return direct;
@@ -96,7 +94,7 @@ export default class DailymotionHelper extends BaseHelper {
       // ignore and throw below
     }
 
-    throw new BaseHelperError("Failed to extract Dailymotion video id");
+    return undefined;
   }
 
   async getVideoData(videoId: string): Promise<MinimalVideoData> {

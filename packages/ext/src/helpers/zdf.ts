@@ -20,7 +20,7 @@ function normalizeZdfUrl(u: URL): URL {
 }
 
 export default class ZDFHelper extends BaseHelper {
-  getVideoId(url: URL): string {
+  async getVideoId(url: URL): Promise<string | undefined> {
     // Prefer canonical URL from the page if present
     try {
       const canonical = document

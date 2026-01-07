@@ -92,7 +92,8 @@ export async function getVideoData(
   }).getHelper(service.host as keyof AvailableVideoHelpers);
 
   if (!service.needExtraData) {
-    return helper.returnBaseData(videoId, enteredURL);
+    const base = helper.returnBaseData(videoId, enteredURL);
+    return { ...base, videoId, host: service.host };
   }
   const result = await helper.getVideoData(videoId);
   if (!result) {

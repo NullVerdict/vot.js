@@ -1,6 +1,4 @@
 import type { MinimalVideoData } from "@vot.js/core/types/helpers/base";
-
-import { BaseHelperError } from "./base";
 import BaseHelper from "./base";
 
 function extractIdFromUrl(url: URL): string | undefined {
@@ -20,7 +18,7 @@ function extractIdFromUrl(url: URL): string | undefined {
 }
 
 export default class NicoNicoHelper extends BaseHelper {
-  getVideoId(url: URL): string {
+  async getVideoId(url: URL): Promise<string | undefined> {
     const direct = extractIdFromUrl(url);
     if (direct) return direct;
 
@@ -59,7 +57,7 @@ export default class NicoNicoHelper extends BaseHelper {
       // ignore
     }
 
-    throw new BaseHelperError("Failed to extract NicoNico video id");
+    return undefined;
   }
 
   async getVideoData(videoId: string): Promise<MinimalVideoData> {
