@@ -1,4 +1,4 @@
-import type { MinimalVideoData } from "@vot.js/core/types/helpers/base";
+import type { MinimalVideoData } from "../types/client";
 import BaseHelper from "./base";
 
 function extractIdFromUrl(url: URL): string | undefined {

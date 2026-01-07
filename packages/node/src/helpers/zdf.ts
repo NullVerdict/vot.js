@@ -1,4 +1,4 @@
-import type { MinimalVideoData } from "@vot.js/core/types/helpers/base";
+import type { MinimalVideoData } from "../types/client";
 
 import { BaseHelperError } from "./base";
 import BaseHelper from "./base";

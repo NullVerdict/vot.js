@@ -1,197 +1,221 @@
-import type { ServiceConf } from "../types/service";
-
-import type {
-  BaseHelperOpts,
-  GetVideoDataOpts,
-  MinimalVideoData,
-} from "@vot.js/core/types/helpers/base";
+import type { BaseHelperInterface } from "@vot.js/core/types/helpers/base";
+import type { FetchFunction } from "@vot.js/core/types/client";
 import { VideoService as CoreVideoService } from "@vot.js/core/types/service";
-import { fetchWithTimeout } from "@vot.js/shared/utils/utils";
 
-/**
- * Legacy error name used by most helpers.
- */
+import type { MinimalVideoData } from "../types/client";
+import type { BaseHelperOpts } from "../types/helpers/base";
+import type { ServiceConf, VideoService } from "../types/service";
+
+export type VideoHelperErrorData = {
+  message: string;
+  cause?: unknown;
+};
+
 export class VideoHelperError extends Error {
-  constructor(message?: string) {
-    super(message);
+  public readonly data: VideoHelperErrorData;
+
+  constructor(data: VideoHelperErrorData) {
+    super(data.message);
+    this.data = data;
     this.name = "VideoHelperError";
   }
 }
 
-/**
- * Newer alias used by some helpers.
- */
-export class BaseHelperError extends VideoHelperError {
-  constructor(message?: string) {
-    super(message);
+export type BaseHelperErrorCodes =
+  | "SERVICE_REQUIRED"
+  | "INVALID_VIDEO_ID"
+  | "INVALID_URL";
+
+export type BaseHelperErrorData = {
+  code: BaseHelperErrorCodes;
+  message: string;
+  cause?: unknown;
+};
+
+export class BaseHelperError extends Error {
+  public readonly data: BaseHelperErrorData;
+
+  constructor(data: BaseHelperErrorData) {
+    super(data.message);
+    this.data = data;
     this.name = "BaseHelperError";
   }
 }
 
-function isAbsoluteUrl(value: string): boolean {
-  return /^https?:\/\//i.test(value.trim());
-}
-
-function safeJoinUrl(prefix: string, id: string): string {
-  const p = prefix.trim();
-  const v = id.trim();
-  if (!p) return v;
-
-  // If prefix is a plain query prefix (e.g. https://vk.com/video?z=) just concat.
-  const shouldConcatDirectly =
-    p.endsWith("/") || p.endsWith("=") || p.endsWith("?") || p.includes("?");
-
-  if (shouldConcatDirectly) {
-    if (p.endsWith("/") && v.startsWith("/")) return p + v.slice(1);
-    if (!p.endsWith("/") && p.includes("?") && v.startsWith("/")) {
-      return p + v.slice(1);
-    }
-    return p + v;
-  }
-
-  // Otherwise, ensure single slash.
-  if (v.startsWith("/")) return p + v;
-  return p + "/" + v;
-}
+type UrlOverrides = {
+  /** Override host when the helper proxies another service */
+  host?: VideoService;
+  /** Override the final canonical URL */
+  url?: string | URL;
+};
 
 /**
- * Base class for all extension helpers.
+ * Base helper for the browser extension.
  *
- * Important:
- * - We MUST receive `opts.service` to correctly build canonical URLs.
- * - Many helpers rely on `this.fetch` and `this.API_ORIGIN`.
+ * Notes:
+ * - Keep the public surface compatible with existing helpers.
+ * - Prefer returning a clean, canonical URL when possible.
  */
-export class BaseHelper {
-  public readonly service: ServiceConf;
-  public readonly fetchFn: typeof fetchWithTimeout;
-  public readonly extraInfo: boolean;
-  public readonly referer: string;
+export default class BaseHelper
+  implements BaseHelperInterface<VideoService, ServiceConf>
+{
+  public readonly fetch: FetchFunction;
+  public readonly opts: BaseHelperOpts;
+
+  public readonly API_ORIGIN: string;
+
   public readonly origin: string;
-  public readonly language: string;
+  public readonly referer: string;
 
-  // Many helpers override this; default is origin.
-  public API_ORIGIN: string;
+  public readonly service?: ServiceConf;
+  public readonly selectors?: { [key: string]: string };
 
-  constructor(opts: BaseHelperOpts<ServiceConf> = {}) {
-    if (!opts.service) {
-      throw new BaseHelperError("BaseHelper requires opts.service");
-    }
+  /** Used by VideoJS-like helpers */
+  public video?: HTMLVideoElement;
+
+  constructor(opts: BaseHelperOpts, fetchFn: FetchFunction) {
+    this.opts = opts;
+    this.fetch = fetchFn;
+
     this.service = opts.service;
-    this.fetchFn = opts.fetchFn || fetchWithTimeout;
-    this.extraInfo = opts.extraInfo ?? true;
-    this.referer = opts.referer ?? "";
-    this.origin =
-      opts.origin ??
-      (typeof window !== "undefined" ? window.location.origin : "");
-    this.language = opts.language ?? "en";
+    this.selectors = opts.selectors;
 
-    this.API_ORIGIN = this.origin;
-  }
+    this.origin = opts.origin ?? window.location.origin;
+    this.referer = opts.referer ?? document.referrer || this.origin;
 
-  getHeaders(): HeadersInit {
-    return {
-      "User-Agent":
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:135.0) Gecko/20100101 Firefox/135.0",
-      ...(this.referer ? { Referer: this.referer } : {}),
-    };
+    // The extension background usually exposes a small API at /api
+    const fromOpts = opts.apiOrigin;
+    this.API_ORIGIN = fromOpts ?? `${this.origin.replace(/\/$/, "")}/api`;
+
+    this.video = opts.video;
   }
 
   /**
-   * Fetch wrapper that injects headers consistently.
+   * Generic regex-based matcher using the service config. Most helpers override
+   * this for edge cases.
    */
-  fetch(input: string | URL | Request, init: Record<string, any> = {}) {
-    const headers = {
-      ...this.getHeaders(),
-      ...(init.headers ?? {}),
-    };
+  public async getVideoId(url: URL): Promise<string | undefined> {
+    if (!this.service) {
+      throw new BaseHelperError({
+        code: "SERVICE_REQUIRED",
+        message: "Service configuration is required",
+      });
+    }
 
-    return this.fetchFn(input, {
-      ...init,
-      headers,
-    });
+    const patterns = this.service.patterns ?? [];
+
+    const match = patterns.find(
+      (pattern) =>
+        url.href.match(new RegExp(pattern[0])) &&
+        pattern.find((element) => element === url.host),
+    );
+
+    if (!match) return undefined;
+
+    const regex = new RegExp(match[0]);
+    const result = url.href.match(regex);
+    return result?.[1] || result?.[2] || undefined;
   }
 
   /**
-   * Build a canonical URL that is safe for UI and (when required) for yt-dlp.
-   * Some services MUST be normalized to avoid wrong player URLs.
+   * Default implementation returns minimal base data.
+   *
+   * Many helpers override this to fetch title/duration/etc.
    */
-  protected buildCanonicalUrl(videoId: string, sourceUrl?: URL): string {
-    const id = (videoId || "").trim();
-    if (!id) return "";
-
-    // If the helper already returns a URL, keep it.
-    if (isAbsoluteUrl(id)) return id;
-
-    switch (this.service.host) {
-      case CoreVideoService.dailymotion:
-        return `https://www.dailymotion.com/video/${id}`;
-      case CoreVideoService.niconico:
-        return `https://www.nicovideo.jp/watch/${id}`;
-      case CoreVideoService.arte: {
-        const lang = (this.language || "en").toLowerCase();
-        return `https://www.arte.tv/${lang}/videos/${id}/`;
-      }
-      case CoreVideoService.peertube: {
-        // PeerTube is instance-based.
-        const base = sourceUrl?.origin || this.origin;
-        return id.startsWith("/") ? base + id : safeJoinUrl(base, id);
-      }
-      case CoreVideoService.zdf: {
-        const base = "https://www.zdf.de";
-        return id.startsWith("/") ? base + id : safeJoinUrl(base, id);
-      }
-      default:
-        break;
-    }
-
-    if (this.service.url) {
-      return safeJoinUrl(this.service.url, id);
-    }
-
-    // Fallback: rebuild using the source origin.
-    if (sourceUrl?.origin) {
-      return id.startsWith("/")
-        ? sourceUrl.origin + id
-        : safeJoinUrl(sourceUrl.origin, id);
-    }
-
-    return id;
-  }
-
-  /**
-   * Backward compatible: second arg may be duration OR sourceUrl.
-   */
-  returnBaseData(
+  public async getVideoData(
     videoId: string,
-    durationOrSourceUrl?: number | URL,
-    maybeSourceUrl?: URL,
-  ): MinimalVideoData {
-    const duration =
-      typeof durationOrSourceUrl === "number" ? durationOrSourceUrl : undefined;
-    const sourceUrl =
-      durationOrSourceUrl instanceof URL ? durationOrSourceUrl : maybeSourceUrl;
-
-    return {
-      url: this.buildCanonicalUrl(videoId, sourceUrl),
-      videoId,
-      host: this.service.host,
-      duration,
-    };
-  }
-
-  // Default implementations (override in subclasses)
-  // eslint-disable-next-line @typescript-eslint/require-await
-  async getVideoData(
-    videoId: string,
-    _opts?: GetVideoDataOpts,
   ): Promise<MinimalVideoData | undefined> {
     return this.returnBaseData(videoId);
   }
 
-  // eslint-disable-next-line @typescript-eslint/require-await
-  async getVideoId(_url: URL): Promise<string | undefined> {
-    return undefined;
+  private toCleanUrl(u: URL): URL {
+    const clean = new URL(u.toString());
+    clean.hash = "";
+
+    // Preserve essential query params for some services (e.g. YouTube watch?v=...)
+    // but drop common tracking params.
+    const trackingPrefixes = ["utm_", "fbclid", "gclid", "msclkid"];
+    for (const key of Array.from(clean.searchParams.keys())) {
+      if (trackingPrefixes.some((p) => key.startsWith(p))) {
+        clean.searchParams.delete(key);
+      }
+    }
+
+    // Drop empty ?
+    if ([...clean.searchParams.keys()].length === 0) clean.search = "";
+    return clean;
+  }
+
+  private tryParseAbsoluteUrl(maybeUrl: string): URL | undefined {
+    try {
+      return new URL(maybeUrl);
+    } catch {
+      return undefined;
+    }
+  }
+
+  private buildCanonicalUrl(videoId: string, sourceUrl?: URL): URL {
+    // If the ID is actually a URL (some helpers do this), prefer that.
+    const asUrl = this.tryParseAbsoluteUrl(videoId);
+    if (asUrl) return this.toCleanUrl(asUrl);
+
+    const host = this.service?.host;
+    if (host === CoreVideoService.dailymotion) {
+      return new URL(`https://www.dailymotion.com/video/${videoId}`);
+    }
+    if (host === CoreVideoService.niconico) {
+      return new URL(`https://www.nicovideo.jp/watch/${videoId}`);
+    }
+    if (host === CoreVideoService.arte) {
+      return new URL(`https://www.arte.tv/videos/${videoId}`);
+    }
+
+    if (sourceUrl) return this.toCleanUrl(sourceUrl);
+
+    // Fall back to service url template.
+    if (this.service?.url) {
+      try {
+        return new URL(`${this.service.url}${videoId}`);
+      } catch {
+        // ignore
+      }
+    }
+
+    // Last resort: current page.
+    return this.toCleanUrl(new URL(window.location.href));
+  }
+
+  public returnBaseData(
+    videoId: string,
+    durationOrSourceUrl?: number | URL,
+    urlOverrides: UrlOverrides = {},
+  ): MinimalVideoData {
+    const duration =
+      typeof durationOrSourceUrl === "number"
+        ? durationOrSourceUrl
+        : undefined;
+    const sourceUrl =
+      durationOrSourceUrl instanceof URL ? durationOrSourceUrl : undefined;
+
+    const host = urlOverrides.host ?? this.service?.host;
+
+    const url = (() => {
+      if (urlOverrides.url) {
+        const u =
+          urlOverrides.url instanceof URL
+            ? urlOverrides.url
+            : new URL(urlOverrides.url);
+        return this.toCleanUrl(u);
+      }
+      return this.buildCanonicalUrl(videoId, sourceUrl);
+    })();
+
+    return {
+      url: url.toString(),
+      title: this.service?.name ?? "Untitled",
+      duration: duration ?? 0,
+      host,
+      videoId,
+    };
   }
 }
-
-export default BaseHelper;
