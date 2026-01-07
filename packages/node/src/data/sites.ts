@@ -129,28 +129,29 @@ export default [
   {
     host: CoreVideoService.peertube,
     url: "stub", // This is a stub. The present value is set using origin url
-    // Allow any PeerTube instance (not only the curated list) by detecting
-    // typical PeerTube watch/embed URL patterns.
-    match: (url: URL) => {
-      const host = url.hostname;
-      const isKnown = sitesPeertube.some(
-        (h) => host === h || host.endsWith(`.${h}`) || host.includes(h),
-      );
-      if (isKnown) return true;
-
-      // Common PeerTube URL shapes:
-      //  - /w/<id>
-      //  - /videos/watch/<uuid>
-      //  - /videos/embed/<uuid>
-      return /^(?:\/w\/[^/]+|\/videos\/(?:watch|embed)\/[^/]+)/.test(
-        url.pathname,
-      );
-    },
+    match: sitesPeertube,
+    rawResult: true,
   },
   {
     host: CoreVideoService.dailymotion,
     url: "https://dai.ly/",
-    match: /(^|\.)dailymotion\.com$|^dai\.ly$/,
+    match: /^(www.)?dailymotion.com|dai.ly$/,
+  },
+  {
+    host: CoreVideoService.zdf,
+    url: "https://www.zdf.de",
+    match: /^(www\.)?zdf\.de$/,
+    rawResult: true,
+  },
+  {
+    host: CoreVideoService.niconico,
+    url: "https://www.nicovideo.jp/watch/",
+    match: /^((www\.)?nicovideo\.jp|nico\.ms)$/,
+  },
+  {
+    host: CoreVideoService.arte,
+    url: "https://www.arte.tv/en/videos/",
+    match: /^(www\.)?arte\.tv$/,
   },
   {
     host: CoreVideoService.trovo,
@@ -341,17 +342,6 @@ export default [
     host: CoreVideoService.imdb,
     url: "https://www.imdb.com/video/",
     match: /^(www.)?imdb.com$/,
-  },
-
-  {
-    host: CoreVideoService.niconico,
-    url: "https://www.nicovideo.jp/watch/",
-    match: /(^|\.)nicovideo\.jp$|(^|\.)nico\.ms$/,
-  },
-  {
-    host: CoreVideoService.zdf,
-    url: "https://www.zdf.de",
-    match: /(^|\.)zdf\.de$/,
   },
   {
     host: CoreVideoService.telegram,

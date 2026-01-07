@@ -26,6 +26,9 @@ export enum VideoService {
   eporner = "eporner",
   peertube = "peertube",
   dailymotion = "dailymotion",
+  zdf = "zdf",
+  arte = "arte",
+  niconico = "niconico",
   trovo = "trovo",
   yandexdisk = "yandexdisk",
   ok_ru = "okru",
@@ -60,11 +63,7 @@ export enum VideoService {
   ign = "ign",
   bunkr = "bunkr",
   imdb = "imdb",
-  niconico = "niconico",
   telegram = "telegram",
-
-  // New services
-  zdf = "zdf",
 }
 
 export type ServiceConf<T extends string = VideoService> = {

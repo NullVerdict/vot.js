@@ -15,6 +15,9 @@ import CloudflareStreamHelper from "./cloudflarestream";
 import CoursehunterLikeHelper from "./coursehunterLike";
 import CourseraHelper from "./coursera";
 import DailymotionHelper from "./dailymotion";
+import ArteHelper from "./arte";
+import NicoNicoHelper from "./niconico";
+import ZDFHelper from "./zdf";
 import DeeplearningAIHelper from "./deeplearningai";
 import DouyinHelper from "./douyin";
 import DzenHelper from "./dzen";
@@ -47,9 +50,7 @@ import RtNewsHelper from "./rtnews";
 import RumbleHelper from "./rumble";
 import RutubeHelper from "./rutube";
 import SapHelper from "./sap";
-import NicoNicoHelper from "./niconico";
 import TelegramHelper from "./telegram";
-import ZdfHelper from "./zdf";
 import ThisVidHelper from "./thisvid";
 import TikTokHelper from "./tiktok";
 import TrovoHelper from "./trovo";
@@ -91,6 +92,9 @@ export * as XVideosHelper from "./xvideos";
 export * as WatchPornToHelper from "./watchpornto";
 export * as ArchiveHelper from "./archive";
 export * as DailymotionHelper from "./dailymotion";
+export * as ArteHelper from "./arte";
+export * as NicoNicoHelper from "./niconico";
+export * as ZDFHelper from "./zdf";
 export * as YoukuHelper from "./youku";
 export * as EggheadHelper from "./egghead";
 export * as NewgroundsHelper from "./newgrounds";
@@ -121,9 +125,7 @@ export * as ThisVidHelper from "./thisvid";
 export * as IgnHelper from "./ign";
 export * as BunkrHelper from "./bunkr";
 export * as IMDBHelper from "./imdb";
-export * as NicoNicoHelper from "./niconico";
 export * as TelegramHelper from "./telegram";
-export * as ZdfHelper from "./zdf";
 export * as OracleLearnHelper from "./oraclelearn";
 export * as DeeplearningAIHelper from "./deeplearningai";
 export * as NetacadHelper from "./netacad";
@@ -155,6 +157,9 @@ export const availableHelpers = {
   [CoreVideoService.watchpornto]: WatchPornToHelper,
   [CoreVideoService.archive]: ArchiveHelper,
   [CoreVideoService.dailymotion]: DailymotionHelper,
+  [CoreVideoService.zdf]: ZDFHelper,
+  [CoreVideoService.niconico]: NicoNicoHelper,
+  [CoreVideoService.arte]: ArteHelper,
   [CoreVideoService.youku]: YoukuHelper,
   [CoreVideoService.egghead]: EggheadHelper,
   [CoreVideoService.newgrounds]: NewgroundsHelper,
@@ -182,9 +187,7 @@ export const availableHelpers = {
   [CoreVideoService.ign]: IgnHelper,
   [CoreVideoService.bunkr]: BunkrHelper,
   [CoreVideoService.imdb]: IMDBHelper,
-  [CoreVideoService.niconico]: NicoNicoHelper,
   [CoreVideoService.telegram]: TelegramHelper,
-  [CoreVideoService.zdf]: ZdfHelper,
   [ExtVideoService.udemy]: UdemyHelper,
   [ExtVideoService.coursera]: CourseraHelper,
   [ExtVideoService.douyin]: DouyinHelper,

@@ -224,29 +224,34 @@ export default [
   {
     host: CoreVideoService.peertube,
     url: "stub",
-    match: (url: URL) => {
-      const host = url.hostname;
-      const isKnown = sitesPeertube.some(
-        (h) => host === h || host.endsWith(`.${h}`) || host.includes(h),
-      );
-      if (isKnown) return true;
-
-      // Common PeerTube URL shapes:
-      //  - /w/<id>
-      //  - /videos/watch/<uuid>
-      //  - /videos/embed/<uuid>
-      return /^(?:\/w\/[^/]+|\/videos\/(?:watch|embed)\/[^/]+)/.test(
-        url.pathname,
-      );
-    },
-    selector: ".vjs-v7",
+    match: sitesPeertube,
+    selector: "#videojs_html5_api, .vjs-tech",
+    rawResult: true,
   },
   {
     host: CoreVideoService.dailymotion,
-    url: "https://dai.ly/",
-    match: /(^|\.)dailymotion\.com$|^dai\.ly$/,
-    // Dailymotion's player often uses a dedicated <video id="dmp_Video"> element.
-    selector: "#dmp_Video, video, .player",
+    url: "https://www.dailymotion.com/video/",
+    match: [/^geo([\d]+)?.dailymotion.com$/, /^(www\.)?dailymotion.com$/, /^dai\.ly$/],
+    selector: ".player",
+  },
+  {
+    host: CoreVideoService.zdf,
+    url: "https://www.zdf.de",
+    match: /^(www\.)?zdf\.de$/,
+    rawResult: true,
+    selector: "video",
+  },
+  {
+    host: CoreVideoService.niconico,
+    url: "https://www.nicovideo.jp/watch/",
+    match: /^((www\.)?nicovideo\.jp|nico\.ms)$/,
+    selector: "#MainVideoPlayer",
+  },
+  {
+    host: CoreVideoService.arte,
+    url: "https://www.arte.tv/en/videos/",
+    match: /^(www\.)?arte\.tv$/,
+    selector: "video",
   },
   {
     host: CoreVideoService.trovo,
@@ -281,7 +286,8 @@ export default [
     host: CoreVideoService.bannedvideo,
     url: "https://madmaxworld.tv/watch?id=",
     match: /^(www.)?banned.video|madmaxworld.tv$/,
-    selector: ".vjs-v7",
+    selector: "#videojs_html5_api, .vjs-tech",
+    rawResult: true,
     needExtraData: true,
   },
   {
@@ -367,14 +373,16 @@ export default [
     host: CoreVideoService.epicgames,
     url: "https://dev.epicgames.com/community/learning/",
     match: /^dev.epicgames.com$/,
-    selector: ".vjs-v7",
+    selector: "#videojs_html5_api, .vjs-tech",
+    rawResult: true,
     needExtraData: true,
   },
   {
     host: CoreVideoService.odysee,
     url: "stub",
     match: /^odysee.com$/,
-    selector: ".vjs-v7",
+    selector: "#videojs_html5_api, .vjs-tech",
+    rawResult: true,
     needExtraData: true,
   },
   {
@@ -419,7 +427,8 @@ export default [
     host: CoreVideoService.linkedin,
     url: "https://www.linkedin.com/learning/",
     match: /^(www.)?linkedin.com$/,
-    selector: ".vjs-v7",
+    selector: "#videojs_html5_api, .vjs-tech",
+    rawResult: true,
     needExtraData: true,
     needBypassCSP: true,
   },
@@ -461,7 +470,8 @@ export default [
     host: ExtVideoService.artstation,
     url: "https://www.artstation.com/learning/",
     match: /^(www.)?artstation.com$/,
-    selector: ".vjs-v7",
+    selector: "#videojs_html5_api, .vjs-tech",
+    rawResult: true,
     needExtraData: true,
   },
   {
@@ -515,23 +525,6 @@ export default [
     needExtraData: true,
     selector: ".plyr__video-wrapper",
   },
-
-  {
-    host: CoreVideoService.niconico,
-    url: "https://www.nicovideo.jp/watch/",
-    match: /(^|\.)nicovideo\.jp$|(^|\.)nico\.ms$/,
-    // Use the player container instead of the <video> element to avoid overlays
-    // being hidden by the site's own controls.
-    selector: "#MainVideoPlayer",
-  },
-  {
-    host: CoreVideoService.zdf,
-    url: "https://www.zdf.de",
-    match: /(^|\.)zdf\.de$/,
-    // ZDF Mediathek uses the "ngplayer" container (e.g. ngplayer_2_5)
-    // and the <video> element may be created lazily.
-    selector: "#ngplayer_2_5, [id^='ngplayer_'], .ngplayer, video",
-  },
   {
     host: CoreVideoService.imdb,
     url: "https://www.imdb.com/video/",
@@ -550,7 +543,8 @@ export default [
     host: ExtVideoService.oraclelearn,
     url: "https://mylearn.oracle.com/ou/course/",
     match: /^mylearn\.oracle\.com/,
-    selector: ".vjs-v7",
+    selector: "#videojs_html5_api, .vjs-tech",
+    rawResult: true,
     needExtraData: true,
     needBypassCSP: true,
   },

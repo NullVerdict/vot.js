@@ -5,24 +5,18 @@ import BaseHelper from "./base";
 
 function extractIdFromUrl(url: URL): string | undefined {
   const host = url.hostname.replace(/^www\./, "");
+  if (!host.endsWith("arte.tv")) return undefined;
 
-  if (host === "nico.ms") {
-    const id = url.pathname.split("/").filter(Boolean)[0];
-    return id || undefined;
-  }
-
-  if (host.endsWith("nicovideo.jp")) {
-    const m = url.pathname.match(/^\/watch\/([^/?#]+)/);
-    if (m?.[1]) return m[1];
-  }
+  const m = url.pathname.match(/\/videos\/([^/?#]+)/);
+  if (m?.[1]) return m[1];
 
   return undefined;
 }
 
-export default class NicoNicoHelper extends BaseHelper {
+export default class ArteHelper extends BaseHelper {
   getVideoId(url: URL): string {
     const id = extractIdFromUrl(url);
-    if (!id) throw new BaseHelperError("Failed to extract NicoNico video id");
+    if (!id) throw new BaseHelperError("Failed to extract Arte.tv video id");
     return id;
   }
 

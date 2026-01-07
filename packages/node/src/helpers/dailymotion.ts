@@ -1,23 +1,44 @@
-import { BaseHelper } from "./base";
+import type { MinimalVideoData } from "@vot.js/core/types/helpers/base";
+
+import { BaseHelperError } from "./base";
+import BaseHelper from "./base";
+
+function extractIdFromUrl(url: URL): string | undefined {
+  const host = url.hostname.replace(/^www\./, "");
+
+  if (host === "dai.ly") {
+    const id = url.pathname.split("/").filter(Boolean)[0];
+    return id || undefined;
+  }
+
+  if (host.endsWith("dailymotion.com")) {
+    const m = url.pathname.match(/\/(?:video|embed\/video)\/([^/?#]+)/);
+    if (m?.[1]) return m[1];
+  }
+
+  // geo.dailymotion.com/player/<player>.html?video=<id>
+  for (const key of ["video", "videoId", "video_id", "v"]) {
+    const v = url.searchParams.get(key);
+    if (v) return v;
+  }
+
+  return undefined;
+}
+
+function looksLikeVideoId(id: string): boolean {
+  return /^x[a-zA-Z0-9]{5,}$/.test(id);
+}
 
 export default class DailymotionHelper extends BaseHelper {
-  // eslint-disable-next-line @typescript-eslint/require-await
-  async getVideoId(url: URL) {
-    // Supported URL shapes (examples):
-    //  - https://dai.ly/<video-id>
-    //  - https://www.dailymotion.com/video/<video-id>_<slug>
-    //  - https://www.dailymotion.com/embed/video/<video-id>
-    const fromHash = /(?:^|[&#])video=([^&#_]+)/.exec(url.hash)?.[1];
-    if (fromHash) return fromHash;
+  getVideoId(url: URL): string {
+    const id = extractIdFromUrl(url);
+    if (!id || !looksLikeVideoId(id)) {
+      throw new BaseHelperError("Failed to extract Dailymotion video id");
+    }
+    return id;
+  }
 
-    const raw =
-      url.hostname === "dai.ly"
-        ? url.pathname.replace(/^\//, "")
-        : /\/video\/([^/?#]+)/.exec(url.pathname)?.[1] ||
-          /\/embed\/video\/([^/?#]+)/.exec(url.pathname)?.[1];
-
-    if (!raw) return undefined;
-    // Dailymotion often appends a slug after an underscore
-    return raw.split("_")[0];
+  async getVideoData(videoId: string): Promise<MinimalVideoData> {
+    return this.returnBaseData(videoId);
   }
 }
