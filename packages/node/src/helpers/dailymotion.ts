@@ -8,6 +8,10 @@ export default class DailymotionHelper extends BaseHelper {
       return qpVideo;
     }
 
+    if (url.pathname.startsWith("/player/")) {
+      return url.href;
+    }
+
     if (url.hostname === "dai.ly") {
       return url.pathname.replace(/^\//, "").split("/")[0];
     }

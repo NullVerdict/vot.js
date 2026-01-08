@@ -20,6 +20,6 @@ export default class ArteHelper extends BaseHelper {
       }
     }
 
-    return /\/videos\/([^/?#]+)/.exec(url.pathname)?.[1];
+    return url.href;
   }
 }

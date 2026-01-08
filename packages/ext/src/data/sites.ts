@@ -43,13 +43,13 @@ export default [
     host: CoreVideoService.zdf,
     url: "https://www.zdf.de/video/",
     match: /^(www\.)?zdf\.de$/,
-    selector: "video",
+    selector: "body",
   },
   {
     host: CoreVideoService.arte,
     url: "https://www.arte.tv/en/videos/",
     match: /^((www\.)?arte\.tv|api\.arte\.tv)$/,
-    selector: "video",
+    selector: "body",
   },
   {
     host: CoreVideoService.niconico,
