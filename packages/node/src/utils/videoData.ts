@@ -53,11 +53,9 @@ export async function getVideoID(
   const url = new URL(videoURL);
   const serviceHost = service.host;
   if (Object.keys(availableHelpers).includes(serviceHost)) {
-    const helper = new VideoHelper({
-      ...opts,
-      service,
-      origin: url.origin,
-    }).getHelper(serviceHost as keyof AvailableVideoHelpers);
+    const helper = new VideoHelper(opts).getHelper(
+      serviceHost as keyof AvailableVideoHelpers,
+    );
     return await helper.getVideoId(url);
   }
 
@@ -73,13 +71,12 @@ export async function getVideoData(
     throw new VideoDataError(`URL: "${url}" is unknown service`);
   }
 
-  const enteredURL = new URL(url);
   const videoId = await getVideoID(service, url, opts);
   if (!videoId) {
     throw new VideoDataError(`Entered unsupported link: "${url}"`);
   }
 
-  const origin = enteredURL.origin;
+  const origin = new URL(url).origin;
   if (
     [
       CoreVideoService.peertube,
@@ -99,17 +96,30 @@ export async function getVideoData(
     };
   }
 
+  if (!service.needExtraData) {
+    const helper = new VideoHelper({
+      ...opts,
+      service,
+      origin,
+    }).getHelper(service.host as keyof AvailableVideoHelpers);
+    const data = helper.returnBaseData(videoId);
+    if (data) {
+      return data;
+    }
+
+    return {
+      url: service.url + videoId,
+      videoId,
+      host: service.host,
+      duration: undefined,
+    };
+  }
+
   const helper = new VideoHelper({
     ...opts,
     service,
     origin,
   }).getHelper(service.host as keyof AvailableVideoHelpers);
-
-  if (!service.needExtraData) {
-    const base = helper.returnBaseData(videoId, enteredURL);
-    return { ...base, videoId, host: service.host };
-  }
-
   const result = await helper.getVideoData(videoId);
   if (!result) {
     throw new VideoDataError(`Failed to get video raw url for ${service.host}`);

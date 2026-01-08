@@ -29,9 +29,6 @@ import XVideosHelper from "./xvideos";
 import WatchPornToHelper from "./watchpornto";
 import ArchiveHelper from "./archive";
 import DailymotionHelper from "./dailymotion";
-import ArteHelper from "./arte";
-import NicoNicoHelper from "./niconico";
-import ZDFHelper from "./zdf";
 import YoukuHelper from "./youku";
 import EggheadHelper from "./egghead";
 import NewgroundsHelper from "./newgrounds";
@@ -57,6 +54,9 @@ import IgnHelper from "./ign";
 import BunkrHelper from "./bunkr";
 import IMDBHelper from "./imdb";
 import TelegramHelper from "./telegram";
+import ZdfHelper from "./zdf";
+import ArteHelper from "./arte";
+import NicoNicoHelper from "./niconico";
 
 export * as MailRuHelper from "./mailru";
 export * as WeverseHelper from "./weverse";
@@ -84,9 +84,6 @@ export * as XVideosHelper from "./xvideos";
 export * as WatchPornToHelper from "./watchpornto";
 export * as ArchiveHelper from "./archive";
 export * as DailymotionHelper from "./dailymotion";
-export * as ArteHelper from "./arte";
-export * as NicoNicoHelper from "./niconico";
-export * as ZDFHelper from "./zdf";
 export * as YoukuHelper from "./youku";
 export * as EggheadHelper from "./egghead";
 export * as NewgroundsHelper from "./newgrounds";
@@ -112,6 +109,9 @@ export * as IgnHelper from "./ign";
 export * as BunkrHelper from "./bunkr";
 export * as IMDBHelper from "./imdb";
 export * as TelegramHelper from "./telegram";
+export * as ZdfHelper from "./zdf";
+export * as ArteHelper from "./arte";
+export * as NicoNicoHelper from "./niconico";
 
 export const availableHelpers = {
   [CoreVideoService.mailru]: MailRuHelper,
@@ -140,9 +140,6 @@ export const availableHelpers = {
   [CoreVideoService.watchpornto]: WatchPornToHelper,
   [CoreVideoService.archive]: ArchiveHelper,
   [CoreVideoService.dailymotion]: DailymotionHelper,
-  [CoreVideoService.zdf]: ZDFHelper,
-  [CoreVideoService.niconico]: NicoNicoHelper,
-  [CoreVideoService.arte]: ArteHelper,
   [CoreVideoService.youku]: YoukuHelper,
   [CoreVideoService.egghead]: EggheadHelper,
   [CoreVideoService.newgrounds]: NewgroundsHelper,
@@ -171,6 +168,9 @@ export const availableHelpers = {
   [CoreVideoService.bunkr]: BunkrHelper,
   [CoreVideoService.imdb]: IMDBHelper,
   [CoreVideoService.telegram]: TelegramHelper,
+  [CoreVideoService.zdf]: ZdfHelper,
+  [CoreVideoService.arte]: ArteHelper,
+  [CoreVideoService.niconico]: NicoNicoHelper,
 };
 
 export type AvailableVideoHelpers = typeof availableHelpers;

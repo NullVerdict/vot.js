@@ -1,23 +1,25 @@
-import type { MinimalVideoData } from "../types/client";
-import BaseHelper from "./base";
-
-function extractIdFromUrl(url: URL): string | undefined {
-  const host = url.hostname.replace(/^www\./, "");
-  if (!host.endsWith("arte.tv")) return undefined;
-
-  const m = url.pathname.match(/\/videos\/([^/?#]+)/);
-  if (m?.[1]) return m[1];
-
-  return undefined;
-}
+import { BaseHelper } from "./base";
 
 export default class ArteHelper extends BaseHelper {
-  async getVideoId(url: URL): Promise<string | undefined> {
-    const id = extractIdFromUrl(url);
-    return id;
-  }
+  // eslint-disable-next-line @typescript-eslint/require-await
+  async getVideoId(url: URL) {
+    if (url.hostname === "api.arte.tv") {
+      const id = url.pathname.split("/").filter(Boolean).pop();
+      return id || undefined;
+    }
 
-  async getVideoData(videoId: string): Promise<MinimalVideoData> {
-    return this.returnBaseData(videoId);
+    if (url.pathname.includes("/player/")) {
+      const jsonUrl = url.searchParams.get("json_url");
+      if (jsonUrl) {
+        try {
+          const parsed = new URL(decodeURIComponent(jsonUrl));
+          return parsed.pathname.split("/").filter(Boolean).pop() || undefined;
+        } catch {
+          // ignore
+        }
+      }
+    }
+
+    return /\/videos\/([^/?#]+)/.exec(url.pathname)?.[1];
   }
 }

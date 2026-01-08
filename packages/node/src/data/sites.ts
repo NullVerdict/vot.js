@@ -28,6 +28,21 @@ export default [
     match: sitesPiped,
   },
   {
+    host: CoreVideoService.zdf,
+    url: "https://www.zdf.de/video/",
+    match: /^(www\.)?zdf\.de$/,
+  },
+  {
+    host: CoreVideoService.arte,
+    url: "https://www.arte.tv/en/videos/",
+    match: /^((www\.)?arte\.tv|api\.arte\.tv)$/,
+  },
+  {
+    host: CoreVideoService.niconico,
+    url: "https://www.nicovideo.jp/watch/",
+    match: [/^(www\.|sp\.)?nicovideo\.jp$/, /^nico\.ms$/],
+  },
+  {
     host: CoreVideoService.vk,
     url: "https://vk.com/video?z=",
     match: [/^(www.|m.)?vk.(com|ru)$/, /^(www.|m.)?vkvideo.ru$/],
@@ -130,28 +145,11 @@ export default [
     host: CoreVideoService.peertube,
     url: "stub", // This is a stub. The present value is set using origin url
     match: sitesPeertube,
-    rawResult: true,
   },
   {
     host: CoreVideoService.dailymotion,
-    url: "https://dai.ly/",
-    match: /^(www.)?dailymotion.com|dai.ly$/,
-  },
-  {
-    host: CoreVideoService.zdf,
-    url: "https://www.zdf.de",
-    match: /^(www\.)?zdf\.de$/,
-    rawResult: true,
-  },
-  {
-    host: CoreVideoService.niconico,
-    url: "https://www.nicovideo.jp/watch/",
-    match: /^((www\.)?nicovideo\.jp|nico\.ms)$/,
-  },
-  {
-    host: CoreVideoService.arte,
-    url: "https://www.arte.tv/en/videos/",
-    match: /^(www\.)?arte\.tv$/,
+    url: "https://www.dailymotion.com/video/",
+    match: /^((www\.)?dailymotion\.com|geo(\d+)?\.dailymotion\.com|dai\.ly)$/,
   },
   {
     host: CoreVideoService.trovo,
