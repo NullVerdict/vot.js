@@ -84,6 +84,33 @@ export default class DailymotionHelper extends BaseHelper {
         }
       }
 
+      const referrer = document.referrer;
+      if (referrer) {
+        try {
+          const refUrl = new URL(referrer);
+          const qpRefVideo = refUrl.searchParams.get("video");
+          if (qpRefVideo) {
+            return qpRefVideo;
+          }
+
+          if (refUrl.hostname === "dai.ly") {
+            const id = refUrl.pathname.replace(/^\//, "").split("/")[0];
+            if (id) {
+              return id;
+            }
+          }
+
+          if (/^(www\.)?dailymotion\.com$/.test(refUrl.hostname)) {
+            const id = /\/video\/([^/?#]+)/.exec(refUrl.pathname)?.[1];
+            if (id) {
+              return id;
+            }
+          }
+        } catch {
+          // ignore
+        }
+      }
+
       return url.href;
     }
 
