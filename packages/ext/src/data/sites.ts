@@ -43,13 +43,13 @@ export default [
     host: CoreVideoService.zdf,
     url: "https://www.zdf.de/video/",
     match: /^(www\.)?zdf\.de$/,
-    selector: null,
+    selector: "video",
   },
   {
     host: CoreVideoService.arte,
     url: "https://www.arte.tv/en/videos/",
     match: /^((www\.)?arte\.tv|api\.arte\.tv)$/,
-    selector: null,
+    selector: "video",
   },
   {
     host: CoreVideoService.niconico,
@@ -110,7 +110,7 @@ export default [
     host: CoreVideoService.tiktok,
     url: "https://www.tiktok.com/",
     match: /^(www.)?tiktok.com$/,
-    selector: null,
+    selector: "video",
   },
   {
     host: ExtVideoService.douyin,
@@ -218,8 +218,10 @@ export default [
     additionalData: "old", // /blackboard/webplayer/embed-old.html
     host: CoreVideoService.bilibili,
     url: "https://www.bilibili.com/",
-    match: /^(www|m).bilibili.com$/,
-    selector: null,
+    match: (url: URL) =>
+      /^(www|m)\.bilibili\.com$/.test(url.hostname) &&
+      url.pathname.includes("/blackboard/webplayer/embed-old.html"),
+    selector: ".bpx-player-video-wrap",
   },
   {
     host: CoreVideoService.mailru,
@@ -450,7 +452,7 @@ export default [
     host: CoreVideoService.cloudflarestream,
     url: "stub",
     match: /^(watch|embed|iframe|customer-[^.]+).cloudflarestream.com$/,
-    selector: null,
+    selector: "video",
   },
   {
     host: CoreVideoService.loom,
