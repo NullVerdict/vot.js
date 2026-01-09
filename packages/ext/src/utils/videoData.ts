@@ -42,15 +42,82 @@ export async function getVideoID(
   service: ServiceConf,
   opts: GetVideoDataOpts = {},
 ) {
-  const url = new URL(window.location.href);
   const serviceHost = service.host;
+
+  const candidateUrls: string[] = [];
+
+  candidateUrls.push(window.location.href);
+  if (document.URL && document.URL !== window.location.href) {
+    candidateUrls.push(document.URL);
+  }
+
+  const canonicalHref = document
+    .querySelector<HTMLLinkElement>('link[rel="canonical"]')
+    ?.href;
+  if (canonicalHref) {
+    candidateUrls.push(canonicalHref);
+  }
+
+  const ogUrl = document
+    .querySelector<HTMLMetaElement>('meta[property="og:url"], meta[name="og:url"]')
+    ?.content;
+  if (ogUrl) {
+    candidateUrls.push(ogUrl);
+  }
+
+  for (const iframe of Array.from(document.querySelectorAll<HTMLIFrameElement>("iframe"))) {
+    const src = iframe.getAttribute("src");
+    if (!src) {
+      continue;
+    }
+    try {
+      candidateUrls.push(new URL(src, window.location.href).href);
+    } catch {
+      // ignore invalid iframe src
+    }
+  }
+
+  const seen = new Set<string>();
+  const uniqueCandidateUrls = candidateUrls.filter((u) => {
+    if (!u || seen.has(u)) {
+      return false;
+    }
+    seen.add(u);
+    return true;
+  });
+
   if (Object.keys(availableHelpers).includes(serviceHost)) {
     const helper = new VideoHelper(opts).getHelper(
       serviceHost as keyof AvailableVideoHelpers,
     );
-    return await helper.getVideoId(url);
+
+    for (const candidate of uniqueCandidateUrls) {
+      let url: URL;
+      try {
+        url = new URL(candidate);
+      } catch {
+        continue;
+      }
+
+      const id = await helper.getVideoId(url);
+      if (id) {
+        return id;
+      }
+    }
+
+    return undefined;
   }
-  return serviceHost === CoreVideoService.custom ? url.href : undefined;
+
+  if (serviceHost === CoreVideoService.custom) {
+    const fallbackUrl = uniqueCandidateUrls[0] || window.location.href;
+    try {
+      return new URL(fallbackUrl).href;
+    } catch {
+      return window.location.href;
+    }
+  }
+
+  return undefined;
 }
 
 export async function getVideoData(
