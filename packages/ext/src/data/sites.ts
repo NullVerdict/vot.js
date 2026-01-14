@@ -4,9 +4,7 @@ import {
   sitesInvidious,
   sitesPeertube,
   sitesPiped,
-  sitesPoketube,
   sitesProxiTok,
-  sitesRicktube,
 } from "@vot.js/shared/alternativeUrls";
 
 import { ExtVideoService, type ServiceConf } from "../types/service";
@@ -42,16 +40,10 @@ export default [
     needBypassCSP: true,
   },
   {
-    host: CoreVideoService.poketube,
-    url: "https://youtu.be/",
-    match: sitesPoketube,
-    selector: ".video-player-container",
-  },
-  {
-    host: CoreVideoService.ricktube,
-    url: "https://youtu.be/",
-    match: sitesRicktube,
-    selector: "#oframeplayer > pjsdiv:has(video)",
+    host: CoreVideoService.niconico,
+    url: "https://www.nicovideo.jp/watch/",
+    match: [/^(www\.|sp\.)?nicovideo\.jp$/, /^nico\.ms$/],
+    selector: "#MainVideoPlayer",
   },
   {
     additionalData: "mobile",
@@ -73,7 +65,7 @@ export default [
   {
     host: CoreVideoService.vk,
     url: "https://vk.com/video?z=",
-    match: [/^(www.|m.)?vk.(com|ru)$/, /^(www.|m.)?vkvideo.ru$/],
+    match: [/^(www\.|m\.)?vk\.(com|ru)$/, /^(.*\.)?vkvideo\.ru$/],
     selector: "vk-video-player",
     needExtraData: true,
   },
@@ -243,8 +235,8 @@ export default [
   },
   {
     host: CoreVideoService.dailymotion,
-    url: "https://dai.ly/",
-    match: /^geo([\d]+)?.dailymotion.com$/,
+    url: "https://www.dailymotion.com/video/",
+    match: /^((www\.)?dailymotion\.com|geo(\d+)?\.dailymotion\.com|dai\.ly)$/,
     selector: ".player",
   },
   {

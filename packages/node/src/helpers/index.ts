@@ -54,6 +54,7 @@ import IgnHelper from "./ign";
 import BunkrHelper from "./bunkr";
 import IMDBHelper from "./imdb";
 import TelegramHelper from "./telegram";
+import NicoNicoHelper from "./niconico";
 
 export * as MailRuHelper from "./mailru";
 export * as WeverseHelper from "./weverse";
@@ -106,6 +107,7 @@ export * as IgnHelper from "./ign";
 export * as BunkrHelper from "./bunkr";
 export * as IMDBHelper from "./imdb";
 export * as TelegramHelper from "./telegram";
+export * as NicoNicoHelper from "./niconico";
 
 export const availableHelpers = {
   [CoreVideoService.mailru]: MailRuHelper,
@@ -150,9 +152,7 @@ export const availableHelpers = {
   [CoreVideoService.proxitok]: TikTokHelper,
   [CoreVideoService.nine_gag]: NineGAGHelper,
   [CoreVideoService.youtube]: YoutubeHelper,
-  [CoreVideoService.ricktube]: YoutubeHelper,
   [CoreVideoService.invidious]: YoutubeHelper,
-  [CoreVideoService.poketube]: YoutubeHelper,
   [CoreVideoService.piped]: YoutubeHelper,
   [CoreVideoService.dzen]: DzenHelper,
   [CoreVideoService.cloudflarestream]: CloudflareStreamHelper,
@@ -164,6 +164,7 @@ export const availableHelpers = {
   [CoreVideoService.bunkr]: BunkrHelper,
   [CoreVideoService.imdb]: IMDBHelper,
   [CoreVideoService.telegram]: TelegramHelper,
+  [CoreVideoService.niconico]: NicoNicoHelper,
 };
 
 export type AvailableVideoHelpers = typeof availableHelpers;

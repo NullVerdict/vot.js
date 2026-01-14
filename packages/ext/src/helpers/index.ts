@@ -62,6 +62,7 @@ import XVideosHelper from "./xvideos";
 import YandexDiskHelper from "./yandexdisk";
 import YoukuHelper from "./youku";
 import YoutubeHelper from "./youtube";
+import NicoNicoHelper from "./niconico";
 
 export * as MailRuHelper from "./mailru";
 export * as WeverseHelper from "./weverse";
@@ -123,6 +124,7 @@ export * as TelegramHelper from "./telegram";
 export * as OracleLearnHelper from "./oraclelearn";
 export * as DeeplearningAIHelper from "./deeplearningai";
 export * as NetacadHelper from "./netacad";
+export * as NicoNicoHelper from "./niconico";
 
 export const availableHelpers = {
   [CoreVideoService.mailru]: MailRuHelper,
@@ -167,9 +169,7 @@ export const availableHelpers = {
   [CoreVideoService.proxitok]: TikTokHelper,
   [CoreVideoService.nine_gag]: NineGAGHelper,
   [CoreVideoService.youtube]: YoutubeHelper,
-  [CoreVideoService.ricktube]: YoutubeHelper,
   [CoreVideoService.invidious]: YoutubeHelper,
-  [CoreVideoService.poketube]: YoutubeHelper,
   [CoreVideoService.piped]: YoutubeHelper,
   [CoreVideoService.dzen]: DzenHelper,
   [CoreVideoService.cloudflarestream]: CloudflareStreamHelper,
@@ -181,6 +181,7 @@ export const availableHelpers = {
   [CoreVideoService.bunkr]: BunkrHelper,
   [CoreVideoService.imdb]: IMDBHelper,
   [CoreVideoService.telegram]: TelegramHelper,
+  [CoreVideoService.niconico]: NicoNicoHelper,
   [ExtVideoService.udemy]: UdemyHelper,
   [ExtVideoService.coursera]: CourseraHelper,
   [ExtVideoService.douyin]: DouyinHelper,

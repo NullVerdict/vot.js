@@ -4,8 +4,6 @@ import {
   sitesPiped,
   sitesProxiTok,
   sitesPeertube,
-  sitesPoketube,
-  sitesRicktube,
   sitesCoursehunterLike,
 } from "@vot.js/shared/alternativeUrls";
 
@@ -30,21 +28,14 @@ export default [
     match: sitesPiped,
   },
   {
-    // Sites host Poketube. I tested the performance only on poketube.fun
-    host: CoreVideoService.poketube,
-    url: "https://youtu.be/",
-    match: sitesPoketube,
-  },
-  {
-    // Sites host Ricktube
-    host: CoreVideoService.ricktube,
-    url: "https://youtu.be/",
-    match: sitesRicktube,
+    host: CoreVideoService.niconico,
+    url: "https://www.nicovideo.jp/watch/",
+    match: [/^(www\.|sp\.)?nicovideo\.jp$/, /^nico\.ms$/],
   },
   {
     host: CoreVideoService.vk,
     url: "https://vk.com/video?z=",
-    match: [/^(www.|m.)?vk.(com|ru)$/, /^(www.|m.)?vkvideo.ru$/],
+    match: [/^(www\.|m\.)?vk\.(com|ru)$/, /^(.*\.)?vkvideo\.ru$/],
   },
   {
     host: CoreVideoService.nine_gag,
@@ -147,8 +138,8 @@ export default [
   },
   {
     host: CoreVideoService.dailymotion,
-    url: "https://dai.ly/",
-    match: /^(www.)?dailymotion.com|dai.ly$/,
+    url: "https://www.dailymotion.com/video/",
+    match: /^((www\.)?dailymotion\.com|geo(\d+)?\.dailymotion\.com|dai\.ly)$/,
   },
   {
     host: CoreVideoService.trovo,

@@ -62,16 +62,6 @@ describe("youtube", () => {
       expected,
     );
   });
-  test("poketube", async () => {
-    expect(await normalize("https://poketube.fun/watch?v=LK6nLR1bzpI")).toEqual(
-      expected,
-    );
-  });
-  test("ricktube", async () => {
-    expect(await normalize("https://ricktube.ru/watch?v=LK6nLR1bzpI")).toEqual(
-      expected,
-    );
-  });
 });
 
 describe("vk", () => {
@@ -403,25 +393,48 @@ test("eporner", async () => {
 
 describe("peertube", () => {
   test("tube.shanti.cafe", async () => {
-    const expected = "https://tube.shanti.cafe/w/pf94VxeC9H7CtV9MYyJeLU";
+    const expected =
+      "https://tube.shanti.cafe/videos/watch/pf94VxeC9H7CtV9MYyJeLU";
     expect(await normalize(expected)).toEqual(expected);
   });
 
+  test("tube.shanti.cafe short", async () => {
+    const expected =
+      "https://tube.shanti.cafe/videos/watch/pf94VxeC9H7CtV9MYyJeLU";
+    expect(
+      await normalize("https://tube.shanti.cafe/w/pf94VxeC9H7CtV9MYyJeLU"),
+    ).toEqual(expected);
+  });
+
   test("dalek.zone", async () => {
-    const expected = "https://dalek.zone/w/pf94VxeC9H7CtV9MYyJeLU";
+    const expected = "https://dalek.zone/videos/watch/pf94VxeC9H7CtV9MYyJeLU";
     expect(await normalize(expected)).toEqual(expected);
   });
 });
 
 describe("dailymotion", () => {
-  const expected = "https://dai.ly/x8rikn3";
+  const expected = "https://www.dailymotion.com/video/x8rikn3";
   test("normal", async () => {
     expect(
       await normalize("https://www.dailymotion.com/video/x8rikn3"),
     ).toEqual(expected);
   });
   test("short", async () => {
-    expect(await normalize(expected)).toEqual(expected);
+    expect(await normalize("https://dai.ly/x8rikn3")).toEqual(expected);
+  });
+});
+
+
+describe("niconico", () => {
+  test("watch", async () => {
+    expect(await normalize("https://www.nicovideo.jp/watch/sm8628149")).toEqual(
+      "https://www.nicovideo.jp/watch/sm8628149",
+    );
+  });
+  test("short", async () => {
+    expect(await normalize("https://nico.ms/sm9")).toEqual(
+      "https://www.nicovideo.jp/watch/sm9",
+    );
   });
 });
 
