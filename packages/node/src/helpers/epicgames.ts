@@ -1,8 +1,7 @@
-import { BaseHelper } from "./base";
-import type { MinimalVideoData } from "../types/client";
-
-import * as EpicGames from "@vot.js/shared/types/helpers/epicgames";
+import type * as EpicGames from "@vot.js/shared/types/helpers/epicgames";
 import Logger from "@vot.js/shared/utils/logger";
+import type { MinimalVideoData } from "../types/client";
+import { BaseHelper } from "./base";
 
 export default class EpicGamesHelper extends BaseHelper {
   API_ORIGIN = "https://dev.epicgames.com/community/api/learning";

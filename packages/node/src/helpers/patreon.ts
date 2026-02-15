@@ -1,8 +1,7 @@
-import { BaseHelper } from "./base";
-import type { MinimalVideoData } from "../types/client";
-
-import * as Patreon from "@vot.js/shared/types/helpers/patreon";
+import type * as Patreon from "@vot.js/shared/types/helpers/patreon";
 import Logger from "@vot.js/shared/utils/logger";
+import type { MinimalVideoData } from "../types/client";
+import { BaseHelper } from "./base";
 
 export default class PatreonHelper extends BaseHelper {
   API_ORIGIN = "https://www.patreon.com/api";

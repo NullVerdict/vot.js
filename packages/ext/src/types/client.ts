@@ -1,9 +1,10 @@
-import { AtLeast } from "@vot.js/shared/types/utils";
-import { VideoData } from "@vot.js/core/types/client";
-import { type GetVideoDataOpts as CoreGetVideoDataOpts } from "@vot.js/core/types/client";
-
-import { VideoService } from "./service";
-import { BaseHelperOpts } from "./helpers/base";
+import type {
+  GetVideoDataOpts as CoreGetVideoDataOpts,
+  VideoData,
+} from "@vot.js/core/types/client";
+import type { AtLeast } from "@vot.js/shared/types/utils";
+import type { BaseHelperOpts } from "./helpers/base";
+import type { VideoService } from "./service";
 
 export type MinimalVideoData<T extends string = VideoService> = AtLeast<
   VideoData<T>,

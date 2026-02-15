@@ -1,8 +1,7 @@
-import { BaseHelper } from "./base";
-import type { MinimalVideoData } from "../types/client";
-
-import * as Kick from "@vot.js/shared/types/helpers/kick";
+import type * as Kick from "@vot.js/shared/types/helpers/kick";
 import Logger from "@vot.js/shared/utils/logger";
+import type { MinimalVideoData } from "../types/client";
+import { BaseHelper } from "./base";
 
 export default class KickHelper extends BaseHelper {
   API_ORIGIN = "https://kick.com/api";

@@ -1,8 +1,7 @@
-import { BaseHelper, VideoHelperError } from "./base";
-import type { MinimalVideoData } from "../types/client";
-
-import { proxyMedia } from "@vot.js/shared/utils/utils";
 import Logger from "@vot.js/shared/utils/logger";
+import { proxyMedia } from "@vot.js/shared/utils/utils";
+import type { MinimalVideoData } from "../types/client";
+import { BaseHelper, VideoHelperError } from "./base";
 
 export default class IncestflixHelper extends BaseHelper {
   // eslint-disable-next-line @typescript-eslint/require-await

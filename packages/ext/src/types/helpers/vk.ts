@@ -1,4 +1,4 @@
-import { TinyInt } from "@vot.js/shared/types/utils";
+import type { TinyInt } from "@vot.js/shared/types/utils";
 
 export type State = "unstarted" | "playing" | "ended";
 

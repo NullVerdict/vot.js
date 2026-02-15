@@ -1,13 +1,11 @@
-import { parseFromString } from "dom-parser";
-
-import type { MinimalVideoData } from "../types/client";
-import { BaseHelper, VideoHelperError } from "./base";
-
 import type { VideoDataSubtitle } from "@vot.js/core/types/client";
 import type { TranslationHelp } from "@vot.js/core/types/yandex";
-import * as Vimeo from "@vot.js/shared/types/helpers/vimeo";
+import type * as Vimeo from "@vot.js/shared/types/helpers/vimeo";
 import Logger from "@vot.js/shared/utils/logger";
 import { normalizeLang } from "@vot.js/shared/utils/utils";
+import { parseFromString } from "dom-parser";
+import type { MinimalVideoData } from "../types/client";
+import { BaseHelper, VideoHelperError } from "./base";
 
 export default class VimeoHelper extends BaseHelper {
   API_KEY = "";

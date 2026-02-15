@@ -4,7 +4,7 @@ import type {
   ResponseLang,
 } from "@vot.js/shared/types/data";
 
-import { VideoService } from "./service";
+import type { VideoService } from "./service";
 
 export type TranslationStatus = "success" | "waiting" | "parted" | "failed";
 export type TranslationProvider = "yandex" | "yandex_lively";

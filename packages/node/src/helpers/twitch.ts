@@ -1,6 +1,5 @@
-import { BaseHelper, VideoHelperError } from "./base";
-
 import Logger from "@vot.js/shared/utils/logger";
+import { BaseHelper, VideoHelperError } from "./base";
 
 export default class TwitchHelper extends BaseHelper {
   API_ORIGIN = "https://clips.twitch.tv";

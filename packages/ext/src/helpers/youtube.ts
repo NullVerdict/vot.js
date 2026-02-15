@@ -1,12 +1,11 @@
-import { MinimalVideoData } from "../types/client";
-import { BaseHelper } from "./base";
-
-import { VideoDataSubtitle } from "@vot.js/core/types/client";
+import type { VideoDataSubtitle } from "@vot.js/core/types/client";
 import { availableLangs } from "@vot.js/shared/consts";
-import { RequestLang } from "@vot.js/shared/types/data";
+import type { RequestLang } from "@vot.js/shared/types/data";
 import Logger from "@vot.js/shared/utils/logger";
 import { normalizeLang } from "@vot.js/shared/utils/utils";
-import * as YouTubeType from "../types/helpers/youtube";
+import type { MinimalVideoData } from "../types/client";
+import type * as YouTubeType from "../types/helpers/youtube";
+import { BaseHelper } from "./base";
 
 declare global {
   const yt: YouTubeType.YoutubeWindow["yt"];
@@ -241,7 +240,7 @@ export default class YoutubeHelper extends BaseHelper {
       YoutubeHelper.getPlayer()?.getDuration?.call(undefined) ?? undefined;
 
     return {
-      url: this.service!.url + videoId,
+      url: this.service?.url + videoId,
       isStream,
       title,
       localizedTitle,

@@ -1,10 +1,8 @@
-import { parseFromString } from "dom-parser";
-
-import { BaseHelper, VideoHelperError } from "./base";
-
-import * as YandexDisk from "@vot.js/shared/types/helpers/yandexdisk";
+import type * as YandexDisk from "@vot.js/shared/types/helpers/yandexdisk";
 import Logger from "@vot.js/shared/utils/logger";
 import { proxyMedia } from "@vot.js/shared/utils/utils";
+import { parseFromString } from "dom-parser";
+import { BaseHelper, VideoHelperError } from "./base";
 
 export default class YandexDiskHelper extends BaseHelper {
   API_ORIGIN = this.origin ?? "https://disk.yandex.ru";
@@ -26,7 +24,7 @@ export default class YandexDiskHelper extends BaseHelper {
 
   async fetchList(dirHash: string, sk: string) {
     const body = this.getBodyHash(dirHash, sk);
-    const res = await this.fetch(this.API_ORIGIN + "/public/api/fetch-list", {
+    const res = await this.fetch(`${this.API_ORIGIN}/public/api/fetch-list`, {
       method: "POST",
       body,
     });
@@ -40,7 +38,7 @@ export default class YandexDiskHelper extends BaseHelper {
 
   async getDownloadUrl(fileHash: string, sk: string) {
     const body = this.getBodyHash(fileHash, sk);
-    const res = await this.fetch(this.API_ORIGIN + "/public/api/download-url", {
+    const res = await this.fetch(`${this.API_ORIGIN}/public/api/download-url`, {
       method: "POST",
       body,
     });
@@ -57,7 +55,7 @@ export default class YandexDiskHelper extends BaseHelper {
       const res = await this.fetch(this.API_ORIGIN + videoId, {
         headers: {
           Origin: this.API_ORIGIN,
-          Referer: this.API_ORIGIN + "/client/disk",
+          Referer: `${this.API_ORIGIN}/client/disk`,
         },
       });
       if (res.status !== 200) {
@@ -148,7 +146,7 @@ export default class YandexDiskHelper extends BaseHelper {
       );
       // some /d/ links is valid (https://github.com/FOSWLY/vot-cli/pull/50)
       return {
-        url: this.service!.url + videoId.slice(1),
+        url: this.service?.url + videoId.slice(1),
       };
     }
   }
@@ -159,7 +157,7 @@ export default class YandexDiskHelper extends BaseHelper {
       /^\/d\/([^/]+)$/.exec(videoId)
     ) {
       return {
-        url: this.service!.url + videoId.slice(1),
+        url: this.service?.url + videoId.slice(1),
       };
     }
 

@@ -4,6 +4,7 @@ export enum VideoService {
   youtube = "youtube",
   piped = "piped",
   invidious = "invidious",
+  niconico = "niconico",
   vk = "vk",
   nine_gag = "nine_gag",
   gag = nine_gag,
@@ -12,6 +13,11 @@ export enum VideoService {
   tiktok = "tiktok",
   vimeo = "vimeo",
   xvideos = "xvideos",
+  xhamster = "xhamster",
+  spankbang = "spankbang",
+  rule34video = "rule34video",
+  picarto = "picarto",
+  olympicsreplay = "olympics_replay",
   pornhub = "pornhub",
   twitter = "twitter",
   x = twitter,
@@ -33,6 +39,7 @@ export enum VideoService {
   googledrive = "googledrive",
   bannedvideo = "bannedvideo",
   weverse = "weverse",
+  weibo = "weibo",
   newgrounds = "newgrounds",
   egghead = "egghead",
   youku = "youku",
@@ -43,14 +50,12 @@ export enum VideoService {
   kick = "kick",
   apple_developer = "apple_developer",
   appledeveloper = apple_developer,
-  poketube = "poketube",
   epicgames = "epicgames",
   odysee = "odysee",
   coursehunterLike = "coursehunterLike",
   sap = "sap",
   watchpornto = "watchpornto",
   linkedin = "linkedin",
-  ricktube = "ricktube",
   incestflix = "incestflix",
   porntn = "porntn",
   dzen = "dzen",
@@ -60,15 +65,23 @@ export enum VideoService {
   bitview = "bitview",
   thisvid = "thisvid",
   ign = "ign",
+  zdf = "zdf",
   bunkr = "bunkr",
   imdb = "imdb",
   telegram = "telegram",
 }
 
+/**
+ * A host matcher used to identify which service a URL belongs to.
+ */
+export type ServiceMatch = RegExp | string | ((enteredUrl: URL) => boolean);
+
+export type ServiceMatchRule = ServiceMatch | ServiceMatch[];
+
 export type ServiceConf<T extends string = VideoService> = {
   host: T;
   url?: string;
-  match?: any;
+  match?: ServiceMatchRule;
   rawResult?: true;
   needExtraData?: true;
   additionalData?: string;

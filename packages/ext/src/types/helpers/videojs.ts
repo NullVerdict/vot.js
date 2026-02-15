@@ -75,7 +75,7 @@ export type Player<T extends PlayerOptions = PlayerOptions> = {
   poster_: string;
   options_: T;
   textTracks_?: TextTrackObj;
-  currentSources?: Source[];
+  currentSources?(): Source[];
   textTracks(): TextTrackObj;
   getCache(): PlayerCache;
   duration(): number;

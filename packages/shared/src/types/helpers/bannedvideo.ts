@@ -1,4 +1,4 @@
-import { GraphQL } from "../utils";
+import type { GraphQL } from "../utils";
 
 export enum TypeName {
   Channel = "Channel",

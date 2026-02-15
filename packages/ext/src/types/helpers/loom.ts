@@ -1,4 +1,4 @@
-import { GraphQL } from "@vot.js/shared/types/utils";
+import type { GraphQL } from "@vot.js/shared/types/utils";
 
 export type SentryRelease = {
   id: string;

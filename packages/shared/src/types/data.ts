@@ -1,5 +1,5 @@
-import { availableLangs, availableTTS } from "../data/consts";
-import { LoggerLevel } from "./logger";
+import type { availableLangs, availableTTS } from "../data/consts";
+import type { LoggerLevel } from "./logger";
 
 export type ConfigSchema = {
   host: string;
@@ -15,6 +15,6 @@ export type ConfigSchema = {
   version: string;
 };
 
-export type RequestHeaders = Record<string, any>;
+export type RequestHeaders = Record<string, string>;
 export type RequestLang = (typeof availableLangs)[number];
 export type ResponseLang = (typeof availableTTS)[number];

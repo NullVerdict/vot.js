@@ -1,11 +1,9 @@
+import config from "@vot.js/shared/config";
+import type * as Kodik from "@vot.js/shared/types/helpers/kodik";
+import Logger from "@vot.js/shared/utils/logger";
 import { parseFromString } from "dom-parser";
-
 import type { MinimalVideoData } from "../types/client";
 import { BaseHelper, VideoHelperError } from "./base";
-
-import config from "@vot.js/shared/config";
-import * as Kodik from "@vot.js/shared/types/helpers/kodik";
-import Logger from "@vot.js/shared/utils/logger";
 
 export default class KodikHelper extends BaseHelper {
   API_ORIGIN = "https://kodik.biz";
@@ -105,7 +103,7 @@ export default class KodikHelper extends BaseHelper {
       ref_sign,
     } = secureData;
     try {
-      const res = await this.fetch(this.API_ORIGIN + "/ftor", {
+      const res = await this.fetch(`${this.API_ORIGIN}/ftor`, {
         method: "POST",
         headers: {
           "User-Agent": config.userAgent,
@@ -144,7 +142,7 @@ export default class KodikHelper extends BaseHelper {
   decryptUrl(encryptedUrl: string) {
     // check app.serial.HASH.js with query "? 90 : 122"
     const decryptedUrl = atob(
-      encryptedUrl.replace(/[a-zA-Z]/g, function (e) {
+      encryptedUrl.replace(/[a-zA-Z]/g, (e) => {
         // old value 13
         const charCode = e.charCodeAt(0) + 18;
         const pos = e <= "Z" ? 90 : 122;
@@ -152,7 +150,7 @@ export default class KodikHelper extends BaseHelper {
       }),
     );
 
-    return "https:" + decryptedUrl;
+    return `https:${decryptedUrl}`;
   }
 
   // maybe now api return only default url, but who knows

@@ -1,4 +1,4 @@
-import { PlayerOptions as VideoJSPlayerOptions } from "./videojs";
+import type { PlayerOptions as VideoJSPlayerOptions } from "./videojs";
 
 export type Track = {
   kind: "captions";

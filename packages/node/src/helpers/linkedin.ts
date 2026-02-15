@@ -1,12 +1,10 @@
-import { parseFromString } from "dom-parser";
-
-import { BaseHelper, VideoHelperError } from "./base";
-import type { MinimalVideoData } from "../types/client";
-import * as Linkedin from "../types/helpers/linkedin";
-
 import type { VideoDataSubtitle } from "@vot.js/core/types/client";
-import { proxyMedia } from "@vot.js/shared/utils/utils";
 import Logger from "@vot.js/shared/utils/logger";
+import { proxyMedia } from "@vot.js/shared/utils/utils";
+import { parseFromString } from "dom-parser";
+import type { MinimalVideoData } from "../types/client";
+import type * as Linkedin from "../types/helpers/linkedin";
+import { BaseHelper, VideoHelperError } from "./base";
 
 export default class LinkedinHelper extends BaseHelper {
   API_ORIGIN = "https://www.linkedin.com/learning";

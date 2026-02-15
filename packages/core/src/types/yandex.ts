@@ -1,4 +1,4 @@
-import {
+import type {
   AudioBufferObject as AudioBufferObjectProto,
   PartialAudioBufferObject as PartialAudioBufferObjectProto,
 } from "@vot.js/shared/protos";

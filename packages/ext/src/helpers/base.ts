@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/require-await */
 import type { FetchFunction } from "@vot.js/core/types/client";
 import type { BaseHelperInterface } from "@vot.js/core/types/helpers/base";
 import { fetchWithTimeout } from "@vot.js/shared/utils/utils";
@@ -10,8 +9,7 @@ import type { ServiceConf, VideoService } from "../types/service";
 export class VideoHelperError extends Error {
   constructor(message: string) {
     super(message);
-    this.name = "VideoHelper";
-    this.message = message;
+    this.name = "VideoHelperError";
   }
 }
 
@@ -47,12 +45,12 @@ export class BaseHelper
     this.language = language;
   }
 
-  async getVideoData(_videoId: string): Promise<MinimalVideoData | undefined> {
-    return undefined;
+  getVideoData(_videoId: string): Promise<MinimalVideoData | undefined> {
+    return Promise.resolve(undefined);
   }
 
-  async getVideoId(_url: URL): Promise<string | undefined> {
-    return undefined;
+  getVideoId(_url: URL): Promise<string | undefined> {
+    return Promise.resolve(undefined);
   }
 
   returnBaseData(videoId: string) {

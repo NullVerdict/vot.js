@@ -1,3 +1,35 @@
+# 2.4.14
+
+## Ext
+
+- Added support ZDF, NicoNico, XHamster, SpankBang, Rule34Video, Picarto and Olympics Replay
+- Improved VK handling (video ID parsing and canonical URL generation)
+- Fixed Dailymotion video ID extraction for embedded players
+
+## Node
+
+- Added support ZDF, NicoNico, XHamster, SpankBang, Rule34Video, Picarto and Olympics Replay
+- Improved URL normalization for Dailymotion, VK, YouTube, Peertube and ZDF
+- Improved fetch agent header stripping safety for Undici dispatcher options
+
+## Core
+
+- Added new `VideoService` values: `niconico`, `zdf`, `xhamster`, `spankbang`, `rule34video`, `picarto`, `olympics_replay`
+- Added typed service match API (`ServiceMatch`, `ServiceMatchRule`) for `ServiceConf.match`
+- Removed legacy `poketube` and `ricktube` service entries
+
+## Shared
+
+- Added `buildVkVideoUrl` utility and used canonical VK URLs with preserved access params
+- Improved `fetchWithTimeout` (signal forwarding, controlled timeout aborts and no-timeout fast path)
+- Updated alternative mirror lists for Invidious, Piped and Peertube
+- Updated browser UA/sec headers and component metadata
+
+## Workspace
+
+- Added `@biomejs/biome` to dev dependencies
+- Removed `oxlint` and `.oxlintrc.json`, switched `lint` script to Biome
+
 # 2.4.13
 
 ## Ext

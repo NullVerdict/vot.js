@@ -1,7 +1,6 @@
+import Logger from "@vot.js/shared/utils/logger";
 import type { MinimalVideoData } from "../types/client";
 import { BaseHelper, VideoHelperError } from "./base";
-
-import Logger from "@vot.js/shared/utils/logger";
 
 export default class RedditHelper extends BaseHelper {
   API_ORIGIN = "https://www.reddit.com";

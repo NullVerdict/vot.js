@@ -1,11 +1,9 @@
-import { Dom, parseFromString } from "dom-parser";
-
-import { BaseHelper, VideoHelperError } from "./base";
-
 import { VideoDataError } from "@vot.js/core/utils/videoData";
-import * as Ign from "@vot.js/shared/types/helpers/ign";
+import type * as Ign from "@vot.js/shared/types/helpers/ign";
 import Logger from "@vot.js/shared/utils/logger";
 import { proxyMedia } from "@vot.js/shared/utils/utils";
+import { type Dom, parseFromString } from "dom-parser";
+import { BaseHelper, VideoHelperError } from "./base";
 
 export default class IgnHelper extends BaseHelper {
   getVideoDataByScriptData(doc: Dom) {
@@ -87,7 +85,7 @@ export default class IgnHelper extends BaseHelper {
 
   async getVideoData(videoId: string) {
     try {
-      const res = await this.fetch(this.service!.url + videoId);
+      const res = await this.fetch(this.service?.url + videoId);
       if (!res.ok) {
         throw new VideoHelperError(
           `Request failed with ${res.statusText} (${res.status})`,

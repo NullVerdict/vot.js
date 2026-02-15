@@ -1,10 +1,9 @@
-import type { MinimalVideoData } from "../types/client";
-import { BaseHelper } from "./base";
-
 import type { VideoDataSubtitle } from "@vot.js/core/types/client";
-import * as EpicGames from "@vot.js/shared/types/helpers/epicgames";
+import type * as EpicGames from "@vot.js/shared/types/helpers/epicgames";
 import Logger from "@vot.js/shared/utils/logger";
 import { normalizeLang } from "@vot.js/shared/utils/utils";
+import type { MinimalVideoData } from "../types/client";
+import { BaseHelper } from "./base";
 
 export default class EpicGamesHelper extends BaseHelper {
   API_ORIGIN = "https://dev.epicgames.com/community/api/learning";
@@ -51,11 +50,9 @@ export default class EpicGamesHelper extends BaseHelper {
     }
 
     try {
-      subtitlesString = (
-        subtitlesString
-          .replace(/src:(\s)+?(videoUrl)/g, 'src:"removed"')
-          .substring(0, subtitlesString.lastIndexOf("},")) + "]"
-      )
+      subtitlesString = `${subtitlesString
+        .replace(/src:(\s)+?(videoUrl)/g, 'src:"removed"')
+        .substring(0, subtitlesString.lastIndexOf("},"))}]`
         .split("\n")
         .map((line) => line.replace(/([^\s]+):\s?(?!.*\1)/, '"$1":'))
         .join("\n");
@@ -123,7 +120,7 @@ export default class EpicGamesHelper extends BaseHelper {
         const videoId = e.data.replace("getVideoId:", "");
         return resolve(videoId);
       });
-      window.top!.postMessage(`getVideoId:${reqId}`, origin);
+      window.top?.postMessage(`getVideoId:${reqId}`, origin);
     });
   }
 }

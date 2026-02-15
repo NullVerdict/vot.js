@@ -1,6 +1,6 @@
-import { MinimalVideoData } from "../types/client";
-import { BaseHelper, VideoHelperError } from "./base";
 import Logger from "@vot.js/shared/utils/logger";
+import type { MinimalVideoData } from "../types/client";
+import { BaseHelper, VideoHelperError } from "./base";
 
 export default class BitviewHelper extends BaseHelper {
   async getVideoData(videoId: string): Promise<MinimalVideoData | undefined> {

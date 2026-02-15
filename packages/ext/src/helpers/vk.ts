@@ -1,10 +1,9 @@
-import { BaseHelper } from "./base";
-import { MinimalVideoData } from "../types/client";
-import * as VK from "../types/helpers/vk";
-
+import type { VideoDataSubtitle } from "@vot.js/core/types/client";
 import Logger from "@vot.js/shared/utils/logger";
-import { VideoDataSubtitle } from "@vot.js/core/types/client";
-import { normalizeLang } from "@vot.js/shared/utils/utils";
+import { buildVkVideoUrl, normalizeLang } from "@vot.js/shared/utils/utils";
+import type { MinimalVideoData } from "../types/client";
+import type * as VK from "../types/helpers/vk";
+import { BaseHelper } from "./base";
 
 declare global {
   const Videoview: VK.Videoview | undefined;
@@ -16,14 +15,23 @@ export default class VKHelper extends BaseHelper {
       return undefined;
     }
 
-    return Videoview?.getPlayerObject?.call(undefined);
+    try {
+      return Videoview?.getPlayerObject?.();
+    } catch {
+      return undefined;
+    }
   }
 
   // eslint-disable-next-line @typescript-eslint/require-await
   async getVideoData(videoId: string): Promise<MinimalVideoData | undefined> {
+    const currentUrl = new URL(window.location.href);
+
     const player = VKHelper.getPlayer();
     if (!player) {
-      return this.returnBaseData(videoId);
+      const base = this.returnBaseData(videoId);
+      return base
+        ? { ...base, url: buildVkVideoUrl(videoId, currentUrl) }
+        : base;
     }
 
     try {
@@ -52,7 +60,7 @@ export default class VKHelper extends BaseHelper {
       }
 
       return {
-        url: this.service!.url + videoId,
+        url: buildVkVideoUrl(videoId, currentUrl),
         title,
         description,
         duration,
@@ -62,18 +70,21 @@ export default class VKHelper extends BaseHelper {
       Logger.error(
         `Failed to get VK video data, because: ${(err as Error).message}`,
       );
-      return this.returnBaseData(videoId);
+      const base = this.returnBaseData(videoId);
+      return base
+        ? { ...base, url: buildVkVideoUrl(videoId, currentUrl) }
+        : base;
     }
   }
 
   // eslint-disable-next-line @typescript-eslint/require-await
   async getVideoId(url: URL) {
-    const pathID = /^\/(video|clip)-?\d{8,9}_\d{9}$/.exec(url.pathname);
+    const pathID = /^\/((?:video|clip)-?\d+_\d+)(?:\/)?$/.exec(url.pathname);
     if (pathID) {
-      return pathID[0].slice(1);
+      return pathID[1];
     }
 
-    const idInsidePlaylist = /\/playlist\/[^/]+\/(video-?\d{8,9}_\d{9})/.exec(
+    const idInsidePlaylist = /\/playlist\/[^/]+\/(video-?\d+_\d+)/.exec(
       url.pathname,
     );
     if (idInsidePlaylist) {
@@ -88,7 +99,10 @@ export default class VKHelper extends BaseHelper {
     const paramOID = url.searchParams.get("oid");
     const paramID = url.searchParams.get("id");
     if (paramOID && paramID) {
-      return `video-${Math.abs(parseInt(paramOID))}_${paramID}`;
+      const ownerId = Math.abs(Number.parseInt(paramOID, 10));
+      if (!Number.isNaN(ownerId)) {
+        return `video-${ownerId}_${paramID}`;
+      }
     }
 
     return undefined;

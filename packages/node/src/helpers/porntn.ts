@@ -1,10 +1,8 @@
-import { parseFromString } from "dom-parser";
-
-import { BaseHelper, VideoHelperError } from "./base";
-import type { MinimalVideoData } from "../types/client";
-
-import { proxyMedia } from "@vot.js/shared/utils/utils";
 import Logger from "@vot.js/shared/utils/logger";
+import { proxyMedia } from "@vot.js/shared/utils/utils";
+import { parseFromString } from "dom-parser";
+import type { MinimalVideoData } from "../types/client";
+import { BaseHelper, VideoHelperError } from "./base";
 
 export default class PornTNHelper extends BaseHelper {
   async getVideoData(videoId: string): Promise<MinimalVideoData | undefined> {

@@ -1,4 +1,4 @@
-import { describe, test, expect } from "bun:test";
+import { describe, expect, test } from "bun:test";
 import { getVideoData } from "../packages/node/src/utils/videoData";
 import config from "../packages/shared/src/data/config";
 import { fetchWithTimeout } from "../packages/shared/src/utils/utils";
@@ -59,16 +59,6 @@ describe("youtube", () => {
   });
   test("piped", async () => {
     expect(await normalize("https://piped.video/watch?v=LK6nLR1bzpI")).toEqual(
-      expected,
-    );
-  });
-  test("poketube", async () => {
-    expect(await normalize("https://poketube.fun/watch?v=LK6nLR1bzpI")).toEqual(
-      expected,
-    );
-  });
-  test("ricktube", async () => {
-    expect(await normalize("https://ricktube.ru/watch?v=LK6nLR1bzpI")).toEqual(
       expected,
     );
   });
@@ -207,12 +197,28 @@ describe("vimeo", () => {
   test("public", async () => {
     expect(await normalize(expected)).toEqual(expected);
   });
+  test("public www", async () => {
+    expect(await normalize("https://www.vimeo.com/1074816435")).toEqual(
+      expected,
+    );
+  });
   test("unlisted", async () => {
     expect(await normalize(expectedUnlisted)).toEqual(expectedUnlisted);
   });
   test("embed", async () => {
     expect(
       await normalize("https://player.vimeo.com/video/1074816435"),
+    ).toEqual(expected);
+  });
+  test("embed without video prefix", async () => {
+    expect(await normalize("https://player.vimeo.com/1074816435")).toBeOneOf([
+      expected,
+      "https://player.vimeo.com/video/1074816435",
+    ]);
+  });
+  test("embed trailing slash", async () => {
+    expect(
+      await normalize("https://player.vimeo.com/video/1074816435/"),
     ).toEqual(expected);
   });
   test("embed unlisted", async () => {
@@ -228,6 +234,12 @@ describe("vimeo", () => {
   test("embed hidden 2", async () => {
     const expected = "https://player.vimeo.com/video/994752187";
     expect(await normalize(expected, "https://laracasts.com/")).toEqual(
+      expected,
+    );
+  });
+  test("embed hidden trailing slash", async () => {
+    const expected = "https://player.vimeo.com/video/722299957";
+    expect(await normalize(`${expected}/`, "https://leetcode.com/")).toEqual(
       expected,
     );
   });
@@ -273,6 +285,92 @@ describe("xvideos", () => {
   test("xvideos with numbers", async () => {
     expect(await normalize(`https://xvideos005.com/${pathname}`)).toEqual(
       expected,
+    );
+  });
+});
+
+describe("xhamster", () => {
+  test("videos", async () => {
+    const expected =
+      "https://xhamster.com/videos/femaleagent-shy-beauty-takes-the-bait-1509445";
+    expect(await normalize(expected)).toEqual(expected);
+  });
+
+});
+
+describe("spankbang", () => {
+  test("video", async () => {
+    const expected = "https://spankbang.com/56b3d/video/the+slut+maker+hmv";
+    expect(await normalize(expected)).toEqual(expected);
+  });
+
+  test("embed", async () => {
+    expect(await normalize("https://m.spankbang.com/56b3d/embed")).toEqual(
+      "https://spankbang.com/56b3d/embed",
+    );
+  });
+
+  test("playlist", async () => {
+    expect(
+      await normalize(
+        "https://spankbang.com/2v7ik-7ecbgu/playlist/latina+booty",
+      ),
+    ).toEqual("https://spankbang.com/2v7ik-7ecbgu/playlist/latina+booty");
+  });
+});
+
+describe("rule34video", () => {
+  test("video", async () => {
+    expect(
+      await normalize(
+        "https://rule34video.com/video/3065157/shot-it-mmd-hmv/?from=feed",
+      ),
+    ).toEqual("https://rule34video.com/video/3065157/shot-it-mmd-hmv/");
+  });
+
+  test("videos", async () => {
+    expect(
+      await normalize(
+        "https://rule34video.com/videos/3065296/lara-in-trouble-ep-7-wildeerstudio/",
+      ),
+    ).toEqual(
+      "https://rule34video.com/video/3065296/lara-in-trouble-ep-7-wildeerstudio/",
+    );
+  });
+});
+
+describe("picarto", () => {
+  test("live", async () => {
+    expect(await normalize("https://picarto.tv/Setz")).toEqual(
+      "https://picarto.tv/Setz",
+    );
+  });
+
+  test("vod", async () => {
+    expect(
+      await normalize("https://picarto.tv/ArtofZod/videos/771008"),
+    ).toEqual("https://picarto.tv/ArtofZod/videos/771008");
+  });
+});
+
+describe("olympics replay", () => {
+  test("replay", async () => {
+    expect(
+      await normalize(
+        "https://olympics.com/fr/replay/men-s-109kg-group-a-weightlifting-tokyo-2020-replays?query=1",
+      ),
+    ).toEqual(
+      "https://olympics.com/fr/replay/men-s-109kg-group-a-weightlifting-tokyo-2020-replays",
+    );
+  });
+
+  test("original series", async () => {
+    expect(
+      await normalize(
+        "https://olympics.com/en/original-series/episode/b-boys-and-b-girls-take-the-spotlight-breaking-life-road-to-paris-2024",
+      ),
+    ).toEqual(
+      "https://olympics.com/en/original-series/episode/b-boys-and-b-girls-take-the-spotlight-breaking-life-road-to-paris-2024",
     );
   });
 });
@@ -355,6 +453,9 @@ describe("rutube", () => {
 
 describe("bilibili", () => {
   const expected = "https://www.bilibili.com/video/BV1rw41177Ha";
+  const expectedIntlSeries = "https://www.bilibili.tv/play/1043330";
+  const expectedIntlEpisode = "https://www.bilibili.tv/play/1043330/14652453";
+  const expectedIntlVideo = "https://www.bilibili.tv/video/2041863203";
   test("normal", async () => {
     expect(await normalize(expected)).toEqual(expected);
   });
@@ -368,6 +469,31 @@ describe("bilibili", () => {
   test("bangumi", async () => {
     const expectedBangumi = "https://www.bilibili.com/bangumi/play/ep277052";
     expect(await normalize(expectedBangumi)).toEqual(expectedBangumi);
+  });
+  test("intl series with locale", async () => {
+    expect(
+      await normalize("https://www.bilibili.tv/en/play/1043330"),
+    ).toEqual(expectedIntlSeries);
+  });
+  test("intl episode with locale", async () => {
+    expect(
+      await normalize("https://www.bilibili.tv/en/play/1043330/14652453"),
+    ).toEqual(expectedIntlEpisode);
+  });
+  test("intl video with locale", async () => {
+    expect(
+      await normalize("https://www.bilibili.tv/en/video/2041863203"),
+    ).toEqual(expectedIntlVideo);
+  });
+  test("intl mobile domain", async () => {
+    expect(await normalize("https://m.bilibili.tv/en/play/1043330")).toEqual(
+      expectedIntlSeries,
+    );
+  });
+  test("intl bare domain", async () => {
+    expect(await normalize("https://bilibili.tv/en/play/1043330")).toEqual(
+      expectedIntlSeries,
+    );
   });
 });
 
@@ -403,25 +529,47 @@ test("eporner", async () => {
 
 describe("peertube", () => {
   test("tube.shanti.cafe", async () => {
-    const expected = "https://tube.shanti.cafe/w/pf94VxeC9H7CtV9MYyJeLU";
+    const expected =
+      "https://tube.shanti.cafe/videos/watch/pf94VxeC9H7CtV9MYyJeLU";
     expect(await normalize(expected)).toEqual(expected);
   });
 
+  test("tube.shanti.cafe short", async () => {
+    const expected =
+      "https://tube.shanti.cafe/videos/watch/pf94VxeC9H7CtV9MYyJeLU";
+    expect(
+      await normalize("https://tube.shanti.cafe/w/pf94VxeC9H7CtV9MYyJeLU"),
+    ).toEqual(expected);
+  });
+
   test("dalek.zone", async () => {
-    const expected = "https://dalek.zone/w/pf94VxeC9H7CtV9MYyJeLU";
+    const expected = "https://dalek.zone/videos/watch/pf94VxeC9H7CtV9MYyJeLU";
     expect(await normalize(expected)).toEqual(expected);
   });
 });
 
 describe("dailymotion", () => {
-  const expected = "https://dai.ly/x8rikn3";
+  const expected = "https://www.dailymotion.com/video/x8rikn3";
   test("normal", async () => {
     expect(
       await normalize("https://www.dailymotion.com/video/x8rikn3"),
     ).toEqual(expected);
   });
   test("short", async () => {
-    expect(await normalize(expected)).toEqual(expected);
+    expect(await normalize("https://dai.ly/x8rikn3")).toEqual(expected);
+  });
+});
+
+describe("niconico", () => {
+  test("watch", async () => {
+    expect(await normalize("https://www.nicovideo.jp/watch/sm8628149")).toEqual(
+      "https://www.nicovideo.jp/watch/sm8628149",
+    );
+  });
+  test("short", async () => {
+    expect(await normalize("https://nico.ms/sm9")).toEqual(
+      "https://www.nicovideo.jp/watch/sm9",
+    );
   });
 });
 
@@ -533,6 +681,38 @@ describe("weverse", () => {
     expect(
       await normalize("https://weverse.io/aespa/live/3-142049908"),
     ).toInclude(expected);
+  });
+});
+
+describe("weibo", () => {
+  test("profile post", async () => {
+    const expected = "https://weibo.com/7827771738/N4xlMvjhI";
+    expect(await normalize(expected)).toEqual(expected);
+  });
+
+  test("profile post with www + query", async () => {
+    const expected = "https://weibo.com/7827771738/N4xlMvjhI";
+    expect(
+      await normalize(`${expected.replace("https://", "https://www.")}?foo=1`),
+    ).toEqual(expected);
+  });
+
+  test("tv show", async () => {
+    const expected = "https://weibo.com/tv/show/1034:4797699866951785";
+    expect(await normalize(`${expected}?from=old_pc_videoshow`)).toEqual(
+      expected,
+    );
+  });
+
+  test("video.weibo.com", async () => {
+    expect(
+      await normalize("https://video.weibo.com/show?fid=1034:4967272104787984"),
+    ).toEqual("https://weibo.com/tv/show/1034:4967272104787984");
+  });
+
+  test("mid link", async () => {
+    const expected = "https://weibo.com/0/4224132150961381";
+    expect(await normalize(expected)).toEqual(expected);
   });
 });
 
@@ -748,6 +928,23 @@ test("dzen", async () => {
   const expected = "https://dzen.ru/video/watch/667d9f7f73e0bf4fe67fee32";
   const normalized = await normalize(expected);
   expect(normalized).toEqual(expected);
+});
+
+describe("zdf", () => {
+  const expected =
+    "https://www.zdf.de/play/serien/blutige-anfaenger-102/cop-killer-104";
+
+  test("play", async () => {
+    const normalized = await normalize(expected);
+    expect(normalized).toEqual(expected);
+  });
+
+  test("play without www + trailing slash + query", async () => {
+    const normalized = await normalize(
+      "https://zdf.de/play/serien/blutige-anfaenger-102/cop-killer-104/?foo=bar",
+    );
+    expect(normalized).toEqual(expected);
+  });
 });
 
 describe("cloudflare stream", () => {

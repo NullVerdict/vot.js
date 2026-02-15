@@ -1,14 +1,22 @@
 import type { VideoData } from "@vot.js/core/types/client";
-import { VideoService as CoreVideoService } from "@vot.js/core/types/service";
-import { VideoDataError, localLinkRe } from "@vot.js/core/utils/videoData";
+import {
+  VideoService as CoreVideoService,
+  type ServiceMatch,
+} from "@vot.js/core/types/service";
+import { localLinkRe, VideoDataError } from "@vot.js/core/utils/videoData";
+import { buildVkVideoUrl } from "@vot.js/shared/utils/utils";
 
 import sites from "../data/sites";
 import VideoHelper, {
-  availableHelpers,
   type AvailableVideoHelpers,
+  availableHelpers,
 } from "../helpers";
 import type { GetVideoDataOpts } from "../types/client";
-import { type ServiceConf, VideoService } from "../types/service";
+import type { ServiceConf, VideoService } from "../types/service";
+
+function hasHelper(host: string): host is keyof AvailableVideoHelpers {
+  return host in availableHelpers;
+}
 
 export function getService() {
   if (localLinkRe.exec(window.location.href)) {
@@ -17,20 +25,20 @@ export function getService() {
 
   const hostname = window.location.hostname;
   const enteredURL = new URL(window.location.href);
-  const isMatches = (match: unknown) => {
+  const isMatches = (match: ServiceMatch) => {
     if (match instanceof RegExp) {
       return match.test(hostname);
     } else if (typeof match === "string") {
       return hostname.includes(match);
     } else if (typeof match === "function") {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-      return match(enteredURL) as boolean;
+      return match(enteredURL);
     }
     return false;
   };
 
   return sites.filter((e) => {
     return (
+      !!e.match &&
       (Array.isArray(e.match) ? e.match.some(isMatches) : isMatches(e.match)) &&
       e.host &&
       e.url
@@ -44,10 +52,8 @@ export async function getVideoID(
 ) {
   const url = new URL(window.location.href);
   const serviceHost = service.host;
-  if (Object.keys(availableHelpers).includes(serviceHost)) {
-    const helper = new VideoHelper(opts).getHelper(
-      serviceHost as keyof AvailableVideoHelpers,
-    );
+  if (hasHelper(serviceHost)) {
+    const helper = new VideoHelper(opts).getHelper(serviceHost);
     return await helper.getVideoId(url);
   }
   return serviceHost === CoreVideoService.custom ? url.href : undefined;
@@ -57,12 +63,14 @@ export async function getVideoData(
   service: ServiceConf,
   opts: GetVideoDataOpts = {},
 ): Promise<VideoData<VideoService>> {
+  const currentUrl = new URL(window.location.href);
+
   const videoId = await getVideoID(service, opts);
   if (!videoId) {
     throw new VideoDataError(`Entered unsupported link: "${service.host}"`);
   }
 
-  const origin = window.location.origin;
+  const origin = currentUrl.origin;
   if (
     [
       CoreVideoService.peertube,
@@ -83,6 +91,14 @@ export async function getVideoData(
   }
 
   if (!service.needExtraData) {
+    if (service.host === CoreVideoService.vk) {
+      return {
+        url: buildVkVideoUrl(videoId, currentUrl),
+        videoId,
+        host: service.host,
+        duration: undefined,
+      };
+    }
     return {
       url: service.url + videoId,
       videoId,
@@ -91,11 +107,15 @@ export async function getVideoData(
     };
   }
 
+  if (!hasHelper(service.host)) {
+    throw new VideoDataError(`No helper is available for "${service.host}"`);
+  }
+
   const helper = new VideoHelper({
     ...opts,
     service,
     origin,
-  }).getHelper(service.host as keyof AvailableVideoHelpers);
+  }).getHelper(service.host);
   const result = await helper.getVideoData(videoId);
   if (!result) {
     throw new VideoDataError(`Failed to get video raw url for ${service.host}`);
@@ -103,6 +123,10 @@ export async function getVideoData(
 
   return {
     ...result,
+    url:
+      service.host === CoreVideoService.vk
+        ? buildVkVideoUrl(videoId, currentUrl)
+        : result.url,
     videoId,
     host: service.host,
   };

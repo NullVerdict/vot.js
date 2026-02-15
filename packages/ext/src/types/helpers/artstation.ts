@@ -1,4 +1,4 @@
-import { ISODate } from "@vot.js/shared/types/utils";
+import type { ISODate } from "@vot.js/shared/types/utils";
 
 export type Subtitle = {
   id: number;

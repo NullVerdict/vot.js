@@ -1,7 +1,6 @@
-import { BaseHelper } from "./base";
-import type { MinimalVideoData } from "../types/client";
-
 import Logger from "@vot.js/shared/utils/logger";
+import type { MinimalVideoData } from "../types/client";
+import { BaseHelper } from "./base";
 
 export default class OdyseeHelper extends BaseHelper {
   API_ORIGIN = "https://odysee.com";

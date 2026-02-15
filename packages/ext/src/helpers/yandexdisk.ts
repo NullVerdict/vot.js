@@ -1,8 +1,7 @@
-import { BaseHelper, VideoHelperError } from "./base";
-
-import * as YandexDisk from "@vot.js/shared/types/helpers/yandexdisk";
+import type * as YandexDisk from "@vot.js/shared/types/helpers/yandexdisk";
 import Logger from "@vot.js/shared/utils/logger";
 import { proxyMedia } from "@vot.js/shared/utils/utils";
+import { BaseHelper, VideoHelperError } from "./base";
 
 export default class YandexDiskHelper extends BaseHelper {
   API_ORIGIN = window.location.origin;
@@ -34,7 +33,7 @@ export default class YandexDiskHelper extends BaseHelper {
         preloadedScript.innerText,
       ) as YandexDisk.PreloadedData;
       const { idClient, sk } = preloadedData.config;
-      const res = await this.fetch(this.API_ORIGIN + "/models-v2?m=mpfs/info", {
+      const res = await this.fetch(`${this.API_ORIGIN}/models-v2?m=mpfs/info`, {
         method: "POST",
         body: JSON.stringify({
           apiMethod: "mpfs/info",
@@ -102,7 +101,7 @@ export default class YandexDiskHelper extends BaseHelper {
 
   async fetchList(dirHash: string, sk: string) {
     const body = this.getBodyHash(dirHash, sk);
-    const res = await this.fetch(this.API_ORIGIN + "/public/api/fetch-list", {
+    const res = await this.fetch(`${this.API_ORIGIN}/public/api/fetch-list`, {
       method: "POST",
       body,
     });
@@ -116,7 +115,7 @@ export default class YandexDiskHelper extends BaseHelper {
 
   async getDownloadUrl(fileHash: string, sk: string) {
     const body = this.getBodyHash(fileHash, sk);
-    const res = await this.fetch(this.API_ORIGIN + "/public/api/download-url", {
+    const res = await this.fetch(`${this.API_ORIGIN}/public/api/download-url`, {
       method: "POST",
       body,
     });
@@ -211,7 +210,7 @@ export default class YandexDiskHelper extends BaseHelper {
       /^\/d\/([^/]+)$/.exec(videoId)
     ) {
       return {
-        url: this.service!.url + videoId.slice(1),
+        url: this.service?.url + videoId.slice(1),
       };
     }
 

@@ -1,7 +1,6 @@
-import { BaseHelper } from "./base";
-import { MinimalVideoData } from "../types/client";
-
 import { proxyMedia } from "@vot.js/shared/utils/utils";
+import type { MinimalVideoData } from "../types/client";
+import { BaseHelper } from "./base";
 
 export default class RtNewsHelper extends BaseHelper {
   // eslint-disable-next-line @typescript-eslint/require-await

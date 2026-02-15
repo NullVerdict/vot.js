@@ -1,8 +1,8 @@
-import { VideoDataSubtitle } from "@vot.js/core/types/client";
-import { MinimalVideoData } from "../types/client";
-import { BaseHelper, VideoHelperError } from "./base";
+import type { VideoDataSubtitle } from "@vot.js/core/types/client";
 import Logger from "@vot.js/shared/utils/logger";
 import { normalizeLang } from "@vot.js/shared/utils/utils";
+import type { MinimalVideoData } from "../types/client";
+import { BaseHelper, VideoHelperError } from "./base";
 
 export default class KickstarterHelper extends BaseHelper {
   // eslint-disable-next-line @typescript-eslint/require-await

@@ -1,7 +1,6 @@
-import { BaseHelper } from "./base";
-
-import * as MailRu from "@vot.js/shared/types/helpers/mailru";
+import type * as MailRu from "@vot.js/shared/types/helpers/mailru";
 import Logger from "@vot.js/shared/utils/logger";
+import { BaseHelper } from "./base";
 
 export default class MailRuHelper extends BaseHelper {
   API_ORIGIN = "https://my.mail.ru";
@@ -11,7 +10,7 @@ export default class MailRuHelper extends BaseHelper {
       const res = await this.fetch(
         `${
           this.API_ORIGIN
-        }/+/video/meta/${videoId}?xemail=&ajax_call=1&func_name=&mna=&mnb=&ext=1&_=${new Date().getTime()}`,
+        }/+/video/meta/${videoId}?xemail=&ajax_call=1&func_name=&mna=&mnb=&ext=1&_=${Date.now()}`,
       );
       return (await res.json()) as MailRu.VideoInfo;
     } catch (err) {

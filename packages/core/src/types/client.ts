@@ -7,9 +7,11 @@ import type { BaseHelperOpts } from "./helpers/base";
 import type { VideoService } from "./service";
 import type { TranslationHelp } from "./yandex";
 
+export type FetchInit = RequestInit;
+
 export type FetchFunction = (
   input: string | URL | Request,
-  init?: any,
+  init?: FetchInit,
 ) => Promise<Response>;
 
 export type URLSchema = "http" | "https";

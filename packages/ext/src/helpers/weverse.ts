@@ -1,9 +1,8 @@
-import { BaseHelper, VideoHelperError } from "./base";
-import type { MinimalVideoData } from "../types/client";
-
-import * as Weverse from "@vot.js/shared/types/helpers/weverse";
 import { getHmacSha1 } from "@vot.js/shared/secure";
+import type * as Weverse from "@vot.js/shared/types/helpers/weverse";
 import Logger from "@vot.js/shared/utils/logger";
+import type { MinimalVideoData } from "../types/client";
+import { BaseHelper, VideoHelperError } from "./base";
 
 export default class WeverseHelper extends BaseHelper {
   API_ORIGIN = "https://global.apis.naver.com/weverse/wevweb"; // find as REACT_APP_API_GW_ORIGIN in main.<hash>.js
@@ -60,7 +59,7 @@ export default class WeverseHelper extends BaseHelper {
     try {
       const urlParams = await this.getHashURLParams(pathname);
       const res = await this.fetch(
-        this.API_ORIGIN + pathname + "&" + urlParams,
+        `${this.API_ORIGIN + pathname}&${urlParams}`,
         {
           headers: this.HEADERS,
         },
@@ -87,7 +86,7 @@ export default class WeverseHelper extends BaseHelper {
     try {
       const urlParams = await this.getHashURLParams(pathname);
       const res = await this.fetch(
-        this.API_ORIGIN + pathname + "&" + urlParams,
+        `${this.API_ORIGIN + pathname}&${urlParams}`,
         {
           method: "POST",
           headers: this.HEADERS,

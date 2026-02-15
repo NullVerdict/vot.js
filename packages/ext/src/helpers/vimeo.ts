@@ -1,6 +1,6 @@
 import type { VideoDataSubtitle } from "@vot.js/core/types/client";
 import type { TranslationHelp } from "@vot.js/core/types/yandex";
-import * as Vimeo from "@vot.js/shared/types/helpers/vimeo";
+import type * as Vimeo from "@vot.js/shared/types/helpers/vimeo";
 import Logger from "@vot.js/shared/utils/logger";
 import { normalizeLang } from "@vot.js/shared/utils/utils";
 import type { MinimalVideoData } from "../types/client";

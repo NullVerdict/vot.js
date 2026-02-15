@@ -4,12 +4,22 @@ import {
   sitesInvidious,
   sitesPeertube,
   sitesPiped,
-  sitesPoketube,
   sitesProxiTok,
-  sitesRicktube,
 } from "@vot.js/shared/alternativeUrls";
 
 import { ExtVideoService, type ServiceConf } from "../types/service";
+
+const sharedSelectors = {
+  bilibiliPlayer:
+    ".bpx-player-video-wrap, div.player-mobile-box.player-mobile-autoplay",
+  flowplayer: ".fp-player",
+  idPlayer: "#player",
+  jwPlayer: ".jwplayer, .jw-media",
+  player: ".player",
+  videoJsUniversal:
+    "video-js, .video-js:not(video), .vjs-player, [data-vjs-player], [id^='vjs_video_']:not(video)",
+  vkVideoPlayer: "vk-video-player",
+} as const;
 
 export default [
   {
@@ -31,7 +41,7 @@ export default [
     host: CoreVideoService.invidious,
     url: "https://youtu.be/",
     match: sitesInvidious,
-    selector: "#player",
+    selector: sharedSelectors.idPlayer,
     needBypassCSP: true,
   },
   {
@@ -42,23 +52,23 @@ export default [
     needBypassCSP: true,
   },
   {
-    host: CoreVideoService.poketube,
-    url: "https://youtu.be/",
-    match: sitesPoketube,
-    selector: ".video-player-container",
+    host: CoreVideoService.zdf,
+    url: "https://www.zdf.de/play/",
+    match: [/^zdf.de$/, /^(www.)?zdf.de$/],
+    selector: "div.zdfplayer-app.zdfplayer-desktop, div.zdfplayer-app",
   },
   {
-    host: CoreVideoService.ricktube,
-    url: "https://youtu.be/",
-    match: sitesRicktube,
-    selector: "#oframeplayer > pjsdiv:has(video)",
+    host: CoreVideoService.niconico,
+    url: "https://www.nicovideo.jp/watch/",
+    match: [/^(www\.|sp\.)?nicovideo\.jp$/, /^nico\.ms$/],
+    selector: `[class*="grid-area_[player]"] > div`,
   },
   {
     additionalData: "mobile",
     host: CoreVideoService.vk,
     url: "https://vk.com/video?z=",
     match: [/^m.vk.(com|ru)$/, /^m.vkvideo.ru$/],
-    selector: "vk-video-player",
+    selector: sharedSelectors.vkVideoPlayer,
     shadowRoot: true,
     needExtraData: true,
   },
@@ -73,8 +83,8 @@ export default [
   {
     host: CoreVideoService.vk,
     url: "https://vk.com/video?z=",
-    match: [/^(www.|m.)?vk.(com|ru)$/, /^(www.|m.)?vkvideo.ru$/],
-    selector: "vk-video-player",
+    match: [/^(www\.|m\.)?vk\.(com|ru)$/, /^(.*\.)?vkvideo\.ru$/],
+    selector: sharedSelectors.vkVideoPlayer,
     needExtraData: true,
   },
   {
@@ -119,9 +129,9 @@ export default [
   {
     host: CoreVideoService.vimeo,
     url: "https://vimeo.com/",
-    match: /^vimeo.com$/,
+    match: /^(www\.|m\.)?vimeo.com$/,
     needExtraData: true,
-    selector: ".player",
+    selector: sharedSelectors.player,
   },
   {
     host: CoreVideoService.vimeo,
@@ -130,7 +140,7 @@ export default [
     additionalData: "embed",
     needExtraData: true,
     needBypassCSP: true,
-    selector: ".player",
+    selector: sharedSelectors.player,
   },
   {
     host: CoreVideoService.xvideos,
@@ -142,6 +152,53 @@ export default [
     ],
     selector: "#hlsplayer",
     needBypassCSP: true,
+  },
+  {
+    host: CoreVideoService.xhamster,
+    url: "https://xhamster.com/",
+    match: (url: URL) =>
+      /^(?:[^.]+\.)?(?:xhamster\.(?:com|desi)|xhamster\d+\.(?:com|desi)|xhvid\.com)$/.test(
+        url.host,
+      ) && /\/(?:videos\/[^/]+-[\dA-Za-z]+)\/?$/.test(url.pathname),
+    selector: "#player-container",
+  },
+  {
+    host: CoreVideoService.spankbang,
+    url: "https://spankbang.com/",
+    match: (url: URL) =>
+      /^(?:[^.]+\.)?spankbang\.com$/.test(url.host) &&
+      /\/(?:[\da-z]+\/(?:video|play|embed)(?:\/[^/]+)?|[\da-z]+-[\da-z]+\/playlist\/[^/?#&]+)\/?$/i.test(
+        url.pathname,
+      ),
+    selector: "#main_video_player",
+  },
+  {
+    host: CoreVideoService.rule34video,
+    url: "https://rule34video.com/video/",
+    match: (url: URL) =>
+      /^(www\.)?rule34video\.com$/.test(url.host) &&
+      /\/videos?\/\d+/.test(url.pathname),
+    selector: sharedSelectors.flowplayer,
+  },
+  {
+    host: CoreVideoService.picarto,
+    url: "https://picarto.tv/",
+    match: (url: URL) =>
+      /^(www\.)?picarto\.tv$/.test(url.host) &&
+      /^(?:\/[^/]+\/(?:profile\/)?videos\/[^/?#&]+|\/videopopout\/[^/?#&]+|\/[^/#?]+\/?)$/.test(
+        url.pathname,
+      ),
+    selector: `[class*="VideosTab__PlayerWrapper"]`,
+  },
+  {
+    host: CoreVideoService.olympicsreplay,
+    url: "https://olympics.com/",
+    match: (url: URL) =>
+      /^(www\.)?olympics\.com$/.test(url.host) &&
+      /^\/[a-z]{2}\/(?:paris-2024\/)?(?:replay|videos?|original-series\/episode)\/[\w-]+\/?$/i.test(
+        url.pathname,
+      ),
+    selector: sharedSelectors.videoJsUniversal,
   },
   {
     host: CoreVideoService.pornhub,
@@ -157,7 +214,7 @@ export default [
     match: (url: URL) =>
       /^[a-z]+.pornhub.(com|org)$/.exec(url.host) &&
       url.pathname.startsWith("/embed/"),
-    selector: "#player",
+    selector: sharedSelectors.idPlayer,
   },
   {
     host: CoreVideoService.twitter,
@@ -207,7 +264,13 @@ export default [
     host: CoreVideoService.bilibili,
     url: "https://www.bilibili.com/",
     match: /^(www|m|player).bilibili.com$/,
-    selector: ".bpx-player-video-wrap",
+    selector: sharedSelectors.bilibiliPlayer,
+  },
+  {
+    host: CoreVideoService.bilibili,
+    url: "https://www.bilibili.tv/",
+    match: /^(?:www\.|m\.)?bilibili\.tv$/,
+    selector: sharedSelectors.bilibiliPlayer,
   },
   // Добавляет лишние видео в обработчик
   {
@@ -227,25 +290,25 @@ export default [
     host: CoreVideoService.bitchute,
     url: "https://www.bitchute.com/video/",
     match: /^(www.)?bitchute.com$/,
-    selector: ".video-js",
+    selector: sharedSelectors.videoJsUniversal,
   },
   {
     host: CoreVideoService.eporner,
     url: "https://www.eporner.com/",
     match: /^(www.)?eporner.com$/,
-    selector: ".vjs-v7",
+    selector: sharedSelectors.videoJsUniversal,
   },
   {
     host: CoreVideoService.peertube,
     url: "stub",
     match: sitesPeertube,
-    selector: ".vjs-v7",
+    selector: sharedSelectors.videoJsUniversal,
   },
   {
     host: CoreVideoService.dailymotion,
-    url: "https://dai.ly/",
-    match: /^geo([\d]+)?.dailymotion.com$/,
-    selector: ".player",
+    url: "https://www.dailymotion.com/video/",
+    match: /^((www\.)?dailymotion\.com|geo(\d+)?\.dailymotion\.com|dai\.ly)$/,
+    selector: sharedSelectors.player,
   },
   {
     host: CoreVideoService.trovo,
@@ -267,7 +330,7 @@ export default [
     host: CoreVideoService.okru,
     url: "https://ok.ru/video/",
     match: /^ok.ru$/,
-    selector: "vk-video-player",
+    selector: sharedSelectors.vkVideoPlayer,
     shadowRoot: true,
   },
   {
@@ -280,7 +343,7 @@ export default [
     host: CoreVideoService.bannedvideo,
     url: "https://madmaxworld.tv/watch?id=",
     match: /^(www.)?banned.video|madmaxworld.tv$/,
-    selector: ".vjs-v7",
+    selector: sharedSelectors.videoJsUniversal,
     needExtraData: true,
   },
   {
@@ -289,6 +352,21 @@ export default [
     match: /^weverse.io$/,
     selector: ".webplayer-internal-source-wrapper",
     needExtraData: true,
+  },
+  {
+    host: CoreVideoService.weibo,
+    url: "https://weibo.com/",
+    match: (url: URL) =>
+      (/^(?:www\.)?weibo\.com$/.test(url.host) &&
+        /^\/(?:\d+\/[A-Za-z0-9]+|0\/[A-Za-z0-9]+|tv\/show\/\d+:(?:[\da-f]{32}|\d{16,}))\/?$/.test(
+          url.pathname,
+        )) ||
+      (/^video\.weibo\.com$/.test(url.host) &&
+        /^\/show\/?$/.test(url.pathname) &&
+        /^\d+:(?:[\da-f]{32}|\d{16,})$/i.test(
+          url.searchParams.get("fid") ?? "",
+        )),
+    selector: `#playVideo, sharedSelectors.videoJsUniversal`,
   },
   {
     host: CoreVideoService.newgrounds,
@@ -312,13 +390,13 @@ export default [
     host: CoreVideoService.archive,
     url: "https://archive.org/details/",
     match: /^archive.org$/,
-    selector: ".jw-media",
+    selector: sharedSelectors.jwPlayer,
   },
   {
     host: CoreVideoService.kodik,
     url: "stub",
     match: /^kodik.(info|biz|cc)$/,
-    selector: ".fp-player",
+    selector: sharedSelectors.flowplayer,
     needExtraData: true,
   },
   {
@@ -366,14 +444,14 @@ export default [
     host: CoreVideoService.epicgames,
     url: "https://dev.epicgames.com/community/learning/",
     match: /^dev.epicgames.com$/,
-    selector: ".vjs-v7",
+    selector: sharedSelectors.videoJsUniversal,
     needExtraData: true,
   },
   {
     host: CoreVideoService.odysee,
     url: "stub",
     match: /^odysee.com$/,
-    selector: ".vjs-v7",
+    selector: sharedSelectors.videoJsUniversal,
     needExtraData: true,
   },
   {
@@ -405,20 +483,20 @@ export default [
     host: ExtVideoService.coursera,
     url: "https://www.coursera.org/",
     match: /coursera.org$/,
-    selector: ".vjs-v8",
+    selector: sharedSelectors.videoJsUniversal,
     needExtraData: true,
   },
   {
     host: CoreVideoService.watchpornto,
     url: "https://watchporn.to/",
     match: /^watchporn.to$/,
-    selector: ".fp-player",
+    selector: sharedSelectors.flowplayer,
   },
   {
     host: CoreVideoService.linkedin,
     url: "https://www.linkedin.com/learning/",
     match: /^(www.)?linkedin.com$/,
-    selector: ".vjs-v7",
+    selector: sharedSelectors.videoJsUniversal,
     needExtraData: true,
     needBypassCSP: true,
   },
@@ -433,7 +511,7 @@ export default [
     host: CoreVideoService.porntn,
     url: "https://porntn.com/videos/",
     match: /^porntn.com$/,
-    selector: ".fp-player",
+    selector: sharedSelectors.flowplayer,
     needExtraData: true,
   },
   {
@@ -460,14 +538,14 @@ export default [
     host: ExtVideoService.artstation,
     url: "https://www.artstation.com/learning/",
     match: /^(www.)?artstation.com$/,
-    selector: ".vjs-v7",
+    selector: sharedSelectors.videoJsUniversal,
     needExtraData: true,
   },
   {
     host: CoreVideoService.rtnews,
     url: "https://www.rt.com/",
     match: /^(www.)?rt.com$/,
-    selector: ".jw-media",
+    selector: sharedSelectors.jwPlayer,
     needExtraData: true,
   },
   {
@@ -488,7 +566,7 @@ export default [
     host: CoreVideoService.thisvid,
     url: "https://thisvid.com/",
     match: /^(www.)?thisvid.com$/,
-    selector: ".fp-player",
+    selector: sharedSelectors.flowplayer,
   },
   {
     additionalData: "regional",
@@ -502,7 +580,7 @@ export default [
     host: CoreVideoService.ign,
     url: "https://www.ign.com/",
     match: /^(www.)?ign.com$/,
-    selector: ".player",
+    selector: sharedSelectors.player,
     needExtraData: true,
   },
   {
@@ -518,7 +596,7 @@ export default [
     host: CoreVideoService.imdb,
     url: "https://www.imdb.com/video/",
     match: /^(www\.)?imdb\.com$/,
-    selector: ".jw-media",
+    selector: sharedSelectors.jwPlayer,
   },
   {
     host: CoreVideoService.telegram,
@@ -532,7 +610,7 @@ export default [
     host: ExtVideoService.oraclelearn,
     url: "https://mylearn.oracle.com/ou/course/",
     match: /^mylearn\.oracle\.com/,
-    selector: ".vjs-v7",
+    selector: sharedSelectors.videoJsUniversal,
     needExtraData: true,
     needBypassCSP: true,
   },
@@ -547,7 +625,7 @@ export default [
     host: ExtVideoService.netacad,
     url: "https://www.netacad.com/",
     match: /^(www\.)?netacad\.com/,
-    selector: ".vjs-v8",
+    selector: sharedSelectors.videoJsUniversal,
     needExtraData: true,
   },
   {

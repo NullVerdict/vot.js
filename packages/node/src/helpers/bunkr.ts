@@ -1,9 +1,7 @@
-import { BaseHelper } from "./base";
-
-import * as Bunkr from "../types/helpers/bunkr";
-
 import { VideoDataError } from "@vot.js/core/utils/videoData";
 import Logger from "@vot.js/shared/utils/logger";
+import type * as Bunkr from "../types/helpers/bunkr";
+import { BaseHelper } from "./base";
 
 export default class BunkrHelper extends BaseHelper {
   base64ToBytes(base64: string): Uint8Array {
@@ -23,7 +21,7 @@ export default class BunkrHelper extends BaseHelper {
 
   async getVideoData(videoId: string) {
     try {
-      const res = await this.fetch(this.origin + "/api/vs", {
+      const res = await this.fetch(`${this.origin}/api/vs`, {
         method: "POST",
         body: JSON.stringify({
           slug: videoId,
@@ -34,7 +32,7 @@ export default class BunkrHelper extends BaseHelper {
         throw new VideoDataError("Unknown Bunkr API Response");
       }
 
-      const secret = `SECRET_KEY_` + Math.floor(data.timestamp / 3600);
+      const secret = `SECRET_KEY_${Math.floor(data.timestamp / 3600)}`;
       // player.enc.js
       const decryptedUrl = this.decryptBase64XOR(data.url, secret);
       if (!decryptedUrl.includes(".mp4")) {

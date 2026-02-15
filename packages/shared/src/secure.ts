@@ -1,5 +1,10 @@
 import config from "./data/config";
-import { ClientSession, HashName, SecType, SecYaHeaders } from "./types/secure";
+import type {
+  ClientSession,
+  HashName,
+  SecType,
+  SecYaHeaders,
+} from "./types/secure";
 import Logger from "./utils/logger";
 
 const { componentVersion } = config;
@@ -61,7 +66,11 @@ export async function getSecYaHeaders<T extends SecType>(
     } as SecYaHeaders<T>;
   }
 
-  const sign = await getSignature(body!);
+  if (!body) {
+    throw new TypeError(`Body is required for sec type ${secType}`);
+  }
+
+  const sign = await getSignature(body);
   return {
     [`${secType}-Signature`]: sign,
     [`Sec-${secType}-Sk`]: secretKey,
@@ -94,10 +103,10 @@ export async function getHmacSha1(hmacKey: string, salt: string) {
 }
 
 export const browserSecHeaders = {
-  "sec-ch-ua": `"Chromium";v="134", "YaBrowser";v="${componentVersion.slice(
+  "sec-ch-ua": `"Chromium";v="142", "YaBrowser";v="${componentVersion.slice(
     0,
     5,
   )}", "Not?A_Brand";v="24", "Yowser";v="2.5"`,
-  "sec-ch-ua-full-version-list": `"Chromium";v="134.0.6998.543", "YaBrowser";v="${componentVersion}", "Not?A_Brand";v="24.0.0.0", "Yowser";v="2.5"`,
+  "sec-ch-ua-full-version-list": `"Chromium";v="142.0.7444.59", "YaBrowser";v="${componentVersion}", "Not?A_Brand";v="24.0.0.0", "Yowser";v="2.5"`,
   "Sec-Fetch-Mode": "no-cors",
 } as const;

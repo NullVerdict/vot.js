@@ -3,9 +3,9 @@ import { BaseHelper } from "./base";
 export default class VKHelper extends BaseHelper {
   // eslint-disable-next-line @typescript-eslint/require-await
   async getVideoId(url: URL) {
-    const pathID = /^\/(video|clip)-?\d+_\d+$/.exec(url.pathname);
+    const pathID = /^\/((?:video|clip)-?\d+_\d+)(?:\/)?$/.exec(url.pathname);
     if (pathID) {
-      return pathID[0].slice(1);
+      return pathID[1];
     }
 
     const idInsidePlaylist = /\/playlist\/[^/]+\/(video-?\d+_\d+)/.exec(
@@ -23,7 +23,10 @@ export default class VKHelper extends BaseHelper {
     const paramOID = url.searchParams.get("oid");
     const paramID = url.searchParams.get("id");
     if (paramOID && paramID) {
-      return `video-${Math.abs(parseInt(paramOID))}_${paramID}`;
+      const ownerId = Math.abs(Number.parseInt(paramOID, 10));
+      if (!Number.isNaN(ownerId)) {
+        return `video-${ownerId}_${paramID}`;
+      }
     }
 
     return undefined;

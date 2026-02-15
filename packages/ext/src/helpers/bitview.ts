@@ -1,6 +1,6 @@
-import { MinimalVideoData } from "../types/client";
-import { BaseHelper, VideoHelperError } from "./base";
 import Logger from "@vot.js/shared/utils/logger";
+import type { MinimalVideoData } from "../types/client";
+import { BaseHelper, VideoHelperError } from "./base";
 
 export default class BitviewHelper extends BaseHelper {
   // eslint-disable-next-line @typescript-eslint/require-await

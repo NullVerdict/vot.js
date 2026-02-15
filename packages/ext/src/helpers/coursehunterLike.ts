@@ -1,17 +1,20 @@
-import { BaseHelper } from "./base";
-import type { MinimalVideoData } from "../types/client";
-
 import type { Lesson } from "@vot.js/shared/types/helpers/coursehunterLike";
 import Logger from "@vot.js/shared/utils/logger";
 import { proxyMedia } from "@vot.js/shared/utils/utils";
+import type { MinimalVideoData } from "../types/client";
+import { BaseHelper } from "./base";
+
+type CoursehunterLikeWindow = Window & {
+  course_id?: number;
+  lessons?: Lesson[];
+};
 
 export default class CoursehunterLikeHelper extends BaseHelper {
   API_ORIGIN = this.origin ?? "https://coursehunter.net";
 
   // eslint-disable-next-line @typescript-eslint/require-await
   async getCourseId() {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    const courseId = (window as any).course_id as number | undefined;
+    const courseId = (window as CoursehunterLikeWindow).course_id;
     if (courseId !== undefined) {
       return String(courseId);
     }
@@ -21,8 +24,7 @@ export default class CoursehunterLikeHelper extends BaseHelper {
   }
 
   async getLessonsData(courseId: string) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    const lessons = (window as any).lessons as Lesson[] | undefined;
+    const lessons = (window as CoursehunterLikeWindow).lessons;
     if (lessons?.length) {
       return lessons;
     }

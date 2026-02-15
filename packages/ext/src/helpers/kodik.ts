@@ -1,9 +1,8 @@
+import config from "@vot.js/shared/config";
+import type * as Kodik from "@vot.js/shared/types/helpers/kodik";
+import Logger from "@vot.js/shared/utils/logger";
 import type { MinimalVideoData } from "../types/client";
 import { BaseHelper, VideoHelperError } from "./base";
-
-import config from "@vot.js/shared/config";
-import * as Kodik from "@vot.js/shared/types/helpers/kodik";
-import Logger from "@vot.js/shared/utils/logger";
 
 export default class KodikHelper extends BaseHelper {
   API_ORIGIN = window.location.origin;
@@ -22,9 +21,12 @@ export default class KodikHelper extends BaseHelper {
         throw new VideoHelperError("Failed to find secure script");
       }
 
-      const secureContent = /'{[^']+}'/.exec(
-        secureScript[0].textContent!.trim(),
-      )?.[0];
+      const secureScriptContent = secureScript[0]?.textContent?.trim();
+      if (!secureScriptContent) {
+        throw new VideoHelperError("Secure script content is empty");
+      }
+
+      const secureContent = /'{[^']+}'/.exec(secureScriptContent)?.[0];
       if (!secureContent) {
         throw new VideoHelperError("Secure json wasn't found in secure script");
       }
@@ -92,7 +94,7 @@ export default class KodikHelper extends BaseHelper {
       ref_sign,
     } = secureData;
     try {
-      const res = await this.fetch(this.API_ORIGIN + "/ftor", {
+      const res = await this.fetch(`${this.API_ORIGIN}/ftor`, {
         method: "POST",
         headers: {
           "User-Agent": config.userAgent,
@@ -131,7 +133,7 @@ export default class KodikHelper extends BaseHelper {
   decryptUrl(encryptedUrl: string) {
     // check app.serial.HASH.js with query "? 90 : 122"
     const decryptedUrl = atob(
-      encryptedUrl.replace(/[a-zA-Z]/g, function (e) {
+      encryptedUrl.replace(/[a-zA-Z]/g, (e) => {
         // old value 13
         const charCode = e.charCodeAt(0) + 18;
         const pos = e <= "Z" ? 90 : 122;
@@ -139,7 +141,7 @@ export default class KodikHelper extends BaseHelper {
       }),
     );
 
-    return "https:" + decryptedUrl;
+    return `https:${decryptedUrl}`;
   }
 
   async getVideoData(videoId: string): Promise<MinimalVideoData | undefined> {

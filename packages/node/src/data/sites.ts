@@ -1,12 +1,10 @@
 import { VideoService as CoreVideoService } from "@vot.js/core/types/service";
 import {
+  sitesCoursehunterLike,
   sitesInvidious,
+  sitesPeertube,
   sitesPiped,
   sitesProxiTok,
-  sitesPeertube,
-  sitesPoketube,
-  sitesRicktube,
-  sitesCoursehunterLike,
 } from "@vot.js/shared/alternativeUrls";
 
 import type { ServiceConf } from "../types/service";
@@ -30,21 +28,19 @@ export default [
     match: sitesPiped,
   },
   {
-    // Sites host Poketube. I tested the performance only on poketube.fun
-    host: CoreVideoService.poketube,
-    url: "https://youtu.be/",
-    match: sitesPoketube,
+    host: CoreVideoService.zdf,
+    url: "https://www.zdf.de/play/",
+    match: [/^zdf.de$/, /^(www.)?zdf.de$/],
   },
   {
-    // Sites host Ricktube
-    host: CoreVideoService.ricktube,
-    url: "https://youtu.be/",
-    match: sitesRicktube,
+    host: CoreVideoService.niconico,
+    url: "https://www.nicovideo.jp/watch/",
+    match: [/^(www\.|sp\.)?nicovideo\.jp$/, /^nico\.ms$/],
   },
   {
     host: CoreVideoService.vk,
     url: "https://vk.com/video?z=",
-    match: [/^(www.|m.)?vk.(com|ru)$/, /^(www.|m.)?vkvideo.ru$/],
+    match: [/^(www\.|m\.)?vk\.(com|ru)$/, /^(.*\.)?vkvideo\.ru$/],
   },
   {
     host: CoreVideoService.nine_gag,
@@ -74,7 +70,7 @@ export default [
   {
     host: CoreVideoService.vimeo,
     url: "https://vimeo.com/",
-    match: /^vimeo.com$/,
+    match: /^(www\.|m\.)?vimeo.com$/,
     needExtraData: true,
   },
   {
@@ -92,6 +88,48 @@ export default [
       /^(www.)?xvideos(\d\d\d).com$/,
       /^(www.)?xv-ru.com$/,
     ],
+  },
+  {
+    host: CoreVideoService.xhamster,
+    url: "https://xhamster.com/",
+    match: (url: URL) =>
+      /^(?:[^.]+\.)?(?:xhamster\.(?:com|desi)|xhamster\d+\.(?:com|desi)|xhvid\.com)$/.test(
+        url.host,
+      ) && /\/(?:videos\/[^/]+-[\dA-Za-z]+)\/?$/.test(url.pathname),
+  },
+  {
+    host: CoreVideoService.spankbang,
+    url: "https://spankbang.com/",
+    match: (url: URL) =>
+      /^(?:[^.]+\.)?spankbang\.com$/.test(url.host) &&
+      /\/(?:[\da-z]+\/(?:video|play|embed)(?:\/[^/]+)?|[\da-z]+-[\da-z]+\/playlist\/[^/?#&]+)\/?$/i.test(
+        url.pathname,
+      ),
+  },
+  {
+    host: CoreVideoService.rule34video,
+    url: "https://rule34video.com/video/",
+    match: (url: URL) =>
+      /^(www\.)?rule34video\.com$/.test(url.host) &&
+      /\/videos?\/\d+/.test(url.pathname),
+  },
+  {
+    host: CoreVideoService.picarto,
+    url: "https://picarto.tv/",
+    match: (url: URL) =>
+      /^(www\.)?picarto\.tv$/.test(url.host) &&
+      /^(?:\/[^/]+\/(?:profile\/)?videos\/[^/?#&]+|\/videopopout\/[^/?#&]+|\/[^/#?]+\/?)$/.test(
+        url.pathname,
+      ),
+  },
+  {
+    host: CoreVideoService.olympicsreplay,
+    url: "https://olympics.com/",
+    match: (url: URL) =>
+      /^(www\.)?olympics\.com$/.test(url.host) &&
+      /^\/[a-z]{2}\/(?:paris-2024\/)?(?:replay|videos?|original-series\/episode)\/[\w-]+\/?$/i.test(
+        url.pathname,
+      ),
   },
   {
     host: CoreVideoService.pornhub,
@@ -126,6 +164,11 @@ export default [
     match: /^(www|m|player).bilibili.com$/,
   },
   {
+    host: CoreVideoService.bilibili,
+    url: "https://www.bilibili.tv/",
+    match: /^(?:www\.|m\.)?bilibili\.tv$/,
+  },
+  {
     host: CoreVideoService.mailru,
     url: "https://my.mail.ru/",
     match: /^my.mail.ru$/,
@@ -147,8 +190,8 @@ export default [
   },
   {
     host: CoreVideoService.dailymotion,
-    url: "https://dai.ly/",
-    match: /^(www.)?dailymotion.com|dai.ly$/,
+    url: "https://www.dailymotion.com/video/",
+    match: /^((www\.)?dailymotion\.com|geo(\d+)?\.dailymotion\.com|dai\.ly)$/,
   },
   {
     host: CoreVideoService.trovo,
@@ -184,6 +227,20 @@ export default [
     url: "https://weverse.io/",
     match: /^weverse.io$/,
     needExtraData: true,
+  },
+  {
+    host: CoreVideoService.weibo,
+    url: "https://weibo.com/",
+    match: (url: URL) =>
+      (/^(?:www\.)?weibo\.com$/.test(url.host) &&
+        /^\/(?:\d+\/[A-Za-z0-9]+|0\/[A-Za-z0-9]+|tv\/show\/\d+:(?:[\da-f]{32}|\d{16,}))\/?$/.test(
+          url.pathname,
+        )) ||
+      (/^video\.weibo\.com$/.test(url.host) &&
+        /^\/show\/?$/.test(url.pathname) &&
+        /^\d+:(?:[\da-f]{32}|\d{16,})$/i.test(
+          url.searchParams.get("fid") ?? "",
+        )),
   },
   {
     host: CoreVideoService.newgrounds,

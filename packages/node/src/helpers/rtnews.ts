@@ -1,10 +1,8 @@
-import { parseFromString } from "dom-parser";
-
-import { BaseHelper } from "./base";
-import { MinimalVideoData } from "../types/client";
-
 import Logger from "@vot.js/shared/utils/logger";
 import { proxyMedia } from "@vot.js/shared/utils/utils";
+import { parseFromString } from "dom-parser";
+import type { MinimalVideoData } from "../types/client";
+import { BaseHelper } from "./base";
 
 export default class RtNewsHelper extends BaseHelper {
   async getVideoData(videoId: string): Promise<MinimalVideoData | undefined> {

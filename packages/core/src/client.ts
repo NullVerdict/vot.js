@@ -1,25 +1,24 @@
 import config from "@vot.js/shared/config";
-import Logger from "@vot.js/shared/utils/logger";
-
 import {
   StreamInterval,
-  VideoTranslationAudioResponse,
+  type VideoTranslationAudioResponse,
 } from "@vot.js/shared/protos";
 import { getSecYaHeaders, getSignature, getUUID } from "@vot.js/shared/secure";
-import { fetchWithTimeout, getTimestamp } from "@vot.js/shared/utils/utils";
-
 import type { RequestLang, ResponseLang } from "@vot.js/shared/types/data";
 import type { ClientSession, SessionModule } from "@vot.js/shared/types/secure";
+import Logger from "@vot.js/shared/utils/logger";
+import { fetchWithTimeout, getTimestamp } from "@vot.js/shared/utils/utils";
 
 import { YandexSessionProtobuf, YandexVOTProtobuf } from "./protobuf";
 import type {
   ClientResponse,
   FetchFunction,
+  FetchInit,
   URLSchema,
   VOTOpts,
   VOTSessions,
 } from "./types/client";
-import { VideoService } from "./types/service";
+import type { VideoService } from "./types/service";
 import type {
   GetSubtitlesVOTOpts,
   SubtitleItem,
@@ -52,7 +51,6 @@ export class VOTJSError extends Error {
   ) {
     super(message);
     this.name = "VOTJSError";
-    this.message = message;
   }
 }
 
@@ -167,16 +165,16 @@ export class MinimalClient {
     body: unknown,
     headers: Record<string, string> = {},
     method = "POST",
-  ) {
+  ): FetchInit {
     return {
       method,
       headers: {
         ...this.headers,
         ...headers,
       },
-      body,
+      body: body as BodyInit | null | undefined,
       ...this.fetchOpts,
-    };
+    } as FetchInit;
   }
 
   async getSession(module: SessionModule): Promise<ClientSession> {
@@ -304,7 +302,7 @@ export default class VOTClient<
    */
   async requestVOT<T = unknown>(
     path: string,
-    body: NonNullable<any>,
+    body: Record<string, unknown>,
     headers: Record<string, string> = {},
   ): Promise<ClientResponse<T>> {
     const options = this.getOpts(JSON.stringify(body), {
@@ -417,7 +415,7 @@ export default class VOTClient<
           translationId,
           translated: false,
           status,
-          remainingTime: translationData.remainingTime!,
+          remainingTime: translationData.remainingTime ?? -1,
         };
       case VideoTranslationStatus.AUDIO_REQUESTED:
         /*
@@ -574,19 +572,30 @@ export default class VOTClient<
     headers: Record<string, string> = {},
   ): Promise<VideoTranslationAudioResponse> {
     const session = await this.getSession("video-translation");
-    const body = YandexVOTProtobuf.isPartialAudioBuffer(audioBuffer)
-      ? YandexVOTProtobuf.encodeTranslationAudioRequest(
-          url,
-          translationId,
+    let body: Uint8Array;
+
+    if (YandexVOTProtobuf.isPartialAudioBuffer(audioBuffer)) {
+      if (!partialAudio) {
+        throw new VOTJSError(
+          "Partial audio metadata is required for partial audio buffer",
           audioBuffer,
-          partialAudio!,
-        )
-      : YandexVOTProtobuf.encodeTranslationAudioRequest(
-          url,
-          translationId,
-          audioBuffer,
-          undefined,
         );
+      }
+
+      body = YandexVOTProtobuf.encodeTranslationAudioRequest(
+        url,
+        translationId,
+        audioBuffer,
+        partialAudio,
+      );
+    } else {
+      body = YandexVOTProtobuf.encodeTranslationAudioRequest(
+        url,
+        translationId,
+        audioBuffer,
+        undefined,
+      );
+    }
 
     const path = this.paths.videoTranslationAudio;
     const vtransHeaders = await getSecYaHeaders("Vtrans", session, body, path);
@@ -865,10 +874,17 @@ export default class VOTClient<
               : "translationTakeFewMinutes",
         };
       case StreamInterval.STREAMING: {
+        if (translateResponse.pingId === undefined) {
+          throw new VOTJSError(
+            "Stream ping id wasn't received from Yandex response",
+            translateResponse,
+          );
+        }
+
         return {
           translated: true,
           interval,
-          pingId: translateResponse.pingId!,
+          pingId: translateResponse.pingId,
           result: translateResponse.translatedInfo as StreamTranslationObject,
         };
       }

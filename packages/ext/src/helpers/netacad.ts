@@ -1,7 +1,6 @@
+import { proxyMedia } from "@vot.js/shared/utils/utils";
 import type { MinimalVideoData } from "../types/client";
 import VideoJSHelper from "./videojs";
-
-import { proxyMedia } from "@vot.js/shared/utils/utils";
 
 export default class NetacadHelper extends VideoJSHelper {
   SUBTITLE_SOURCE = "netacad";

@@ -1,7 +1,6 @@
-import VideoJSHelper from "./videojs";
-import type { MinimalVideoData } from "../types/client";
-
 import { proxyMedia } from "@vot.js/shared/utils/utils";
+import type { MinimalVideoData } from "../types/client";
+import VideoJSHelper from "./videojs";
 
 export default class OracleLearnHelper extends VideoJSHelper {
   SUBTITLE_SOURCE = "oraclelearn";

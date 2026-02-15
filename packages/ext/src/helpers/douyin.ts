@@ -1,10 +1,8 @@
-import { BaseHelper } from "./base";
-
-import * as Douyin from "../types/helpers/douyin";
-
 import { availableLangs } from "@vot.js/shared/consts";
-import { RequestLang } from "@vot.js/shared/types/data";
+import type { RequestLang } from "@vot.js/shared/types/data";
 import { proxyMedia } from "@vot.js/shared/utils/utils";
+import type * as Douyin from "../types/helpers/douyin";
+import { BaseHelper } from "./base";
 
 declare global {
   const player: Douyin.Player | undefined;

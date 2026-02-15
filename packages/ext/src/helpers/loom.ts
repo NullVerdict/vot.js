@@ -1,10 +1,9 @@
-import { BaseHelper, VideoHelperError } from "./base";
-import { MinimalVideoData } from "../types/client";
-
-import * as Loom from "../types/helpers/loom";
 import { config } from "@vot.js/shared";
 import Logger from "@vot.js/shared/utils/logger";
 import { normalizeLang } from "@vot.js/shared/utils/utils";
+import type { MinimalVideoData } from "../types/client";
+import type * as Loom from "../types/helpers/loom";
+import { BaseHelper, VideoHelperError } from "./base";
 
 declare global {
   const SENTRY_RELEASE: Loom.SentryRelease | undefined;
@@ -50,7 +49,7 @@ export default class LoomHelper extends BaseHelper {
       }
 
       return {
-        url: this.service!.url + videoId,
+        url: this.service?.url + videoId,
         subtitles: [
           {
             format: "vtt",

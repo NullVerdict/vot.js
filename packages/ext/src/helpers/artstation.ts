@@ -1,10 +1,9 @@
-import { BaseHelper } from "./base";
-import type { MinimalVideoData } from "../types/client";
-import * as Artstation from "../types/helpers/artstation";
-
 import type { VideoDataSubtitle } from "@vot.js/core/types/client";
-import { normalizeLang } from "@vot.js/shared/utils/utils";
 import Logger from "@vot.js/shared/utils/logger";
+import { normalizeLang } from "@vot.js/shared/utils/utils";
+import type { MinimalVideoData } from "../types/client";
+import type * as Artstation from "../types/helpers/artstation";
+import { BaseHelper } from "./base";
 
 export default class ArtstationHelper extends BaseHelper {
   API_ORIGIN = "https://www.artstation.com/api/v2/learning";
@@ -17,13 +16,16 @@ export default class ArtstationHelper extends BaseHelper {
 
   async getCourseInfo(courseId: string) {
     try {
+      const csrfToken = this.getCSRFToken();
       const res = await this.fetch(
         `${this.API_ORIGIN}/courses/${courseId}/autoplay.json`,
         {
           method: "POST",
-          headers: {
-            "PUBLIC-CSRF-TOKEN": this.getCSRFToken(),
-          },
+          headers: csrfToken
+            ? {
+                "PUBLIC-CSRF-TOKEN": csrfToken,
+              }
+            : {},
         },
       );
 

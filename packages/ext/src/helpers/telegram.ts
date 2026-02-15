@@ -1,6 +1,5 @@
+import type * as Telegram from "../types/helpers/telegram";
 import { BaseHelper } from "./base";
-
-import * as Telegram from "../types/helpers/telegram";
 
 declare global {
   const appMediaViewer: Telegram.AppMediaViewer | undefined;

@@ -1,4 +1,8 @@
-import { SubtitleFormat, SubtitleItem, SubtitlesData } from "../types/subs";
+import type {
+  SubtitleFormat,
+  SubtitleItem,
+  SubtitlesData,
+} from "../types/subs";
 
 /**
  * Convert milliseconds to string time format (00:00:00,000)

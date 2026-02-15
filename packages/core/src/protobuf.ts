@@ -23,154 +23,170 @@ import type {
   TranslationHelp,
 } from "./types/yandex";
 
-export abstract class YandexVOTProtobuf {
-  static encodeTranslationRequest(
-    url: string,
-    duration: number,
-    requestLang: string,
-    responseLang: string,
-    translationHelp: TranslationHelp[] | null,
-    {
-      forceSourceLang = false,
-      wasStream = false,
-      videoTitle = "",
-      bypassCache = false,
-      useLivelyVoice = false,
-      firstRequest = true,
-    }: TranslationExtraOpts = {},
-  ) {
-    return VideoTranslationRequest.encode({
-      url,
-      firstRequest,
-      duration,
-      unknown0: 1,
-      language: requestLang,
-      forceSourceLang,
-      unknown1: 0,
-      translationHelp: translationHelp ?? [],
-      responseLanguage: responseLang,
-      wasStream,
-      unknown2: 1,
-      unknown3: 2,
-      bypassCache,
-      useLivelyVoice,
-      videoTitle,
-    }).finish();
-  }
+function encodeTranslationRequest(
+  url: string,
+  duration: number,
+  requestLang: string,
+  responseLang: string,
+  translationHelp: TranslationHelp[] | null,
+  {
+    forceSourceLang = false,
+    wasStream = false,
+    videoTitle = "",
+    bypassCache = false,
+    useLivelyVoice = false,
+    firstRequest = true,
+  }: TranslationExtraOpts = {},
+) {
+  return VideoTranslationRequest.encode({
+    url,
+    firstRequest,
+    duration,
+    unknown0: 1,
+    language: requestLang,
+    forceSourceLang,
+    unknown1: 0,
+    translationHelp: translationHelp ?? [],
+    responseLanguage: responseLang,
+    wasStream,
+    unknown2: 1,
+    unknown3: 2,
+    bypassCache,
+    useLivelyVoice,
+    videoTitle,
+  }).finish();
+}
 
-  static decodeTranslationResponse(response: ArrayBuffer) {
-    return VideoTranslationResponse.decode(new Uint8Array(response));
-  }
+function decodeTranslationResponse(response: ArrayBuffer) {
+  return VideoTranslationResponse.decode(new Uint8Array(response));
+}
 
-  static encodeTranslationCacheRequest(
-    url: string,
-    duration: number,
-    requestLang: string,
-    responseLang: string,
-  ) {
-    return VideoTranslationCacheRequest.encode({
-      url,
-      duration,
-      language: requestLang,
-      responseLanguage: responseLang,
-    }).finish();
-  }
+function encodeTranslationCacheRequest(
+  url: string,
+  duration: number,
+  requestLang: string,
+  responseLang: string,
+) {
+  return VideoTranslationCacheRequest.encode({
+    url,
+    duration,
+    language: requestLang,
+    responseLanguage: responseLang,
+  }).finish();
+}
 
-  static decodeTranslationCacheResponse(response: ArrayBuffer) {
-    return VideoTranslationCacheResponse.decode(new Uint8Array(response));
-  }
+function decodeTranslationCacheResponse(response: ArrayBuffer) {
+  return VideoTranslationCacheResponse.decode(new Uint8Array(response));
+}
 
-  static isPartialAudioBuffer(
-    audioBuffer: PartialAudioBufferObject | AudioBufferObject,
-  ): audioBuffer is PartialAudioBufferObject {
-    return "chunkId" in audioBuffer;
-  }
+function isPartialAudioBuffer(
+  audioBuffer: PartialAudioBufferObject | AudioBufferObject,
+): audioBuffer is PartialAudioBufferObject {
+  return "chunkId" in audioBuffer;
+}
 
-  static encodeTranslationAudioRequest(
-    url: string,
-    translationId: string,
-    audioBuffer: AudioBufferObject,
-    partialAudio?: never,
-  ): Uint8Array;
-  static encodeTranslationAudioRequest(
-    url: string,
-    translationId: string,
-    audioBuffer: PartialAudioBufferObject,
-    partialAudio: PartialAudioObject,
-  ): Uint8Array;
-  static encodeTranslationAudioRequest(
-    url: string,
-    translationId: string,
-    audioBuffer: PartialAudioBufferObject | AudioBufferObject,
-    partialAudio?: PartialAudioObject,
-  ): Uint8Array {
-    if (partialAudio && YandexVOTProtobuf.isPartialAudioBuffer(audioBuffer)) {
-      return VideoTranslationAudioRequest.encode({
-        url,
-        translationId,
-        partialAudioInfo: {
-          ...partialAudio,
-          audioBuffer,
-        },
-      }).finish();
-    }
-
+function encodeTranslationAudioRequest(
+  url: string,
+  translationId: string,
+  audioBuffer: AudioBufferObject,
+  partialAudio?: never,
+): Uint8Array;
+function encodeTranslationAudioRequest(
+  url: string,
+  translationId: string,
+  audioBuffer: PartialAudioBufferObject,
+  partialAudio: PartialAudioObject,
+): Uint8Array;
+function encodeTranslationAudioRequest(
+  url: string,
+  translationId: string,
+  audioBuffer: PartialAudioBufferObject | AudioBufferObject,
+  partialAudio?: PartialAudioObject,
+): Uint8Array {
+  if (partialAudio && isPartialAudioBuffer(audioBuffer)) {
     return VideoTranslationAudioRequest.encode({
       url,
       translationId,
-      audioInfo: audioBuffer as AudioBufferObject,
+      partialAudioInfo: {
+        ...partialAudio,
+        audioBuffer,
+      },
     }).finish();
   }
 
-  static decodeTranslationAudioResponse(response: ArrayBuffer) {
-    return VideoTranslationAudioResponse.decode(new Uint8Array(response));
-  }
-
-  static encodeSubtitlesRequest(url: string, requestLang: string) {
-    return SubtitlesRequest.encode({
-      url,
-      language: requestLang,
-    }).finish();
-  }
-
-  static decodeSubtitlesResponse(response: ArrayBuffer) {
-    return SubtitlesResponse.decode(new Uint8Array(response));
-  }
-
-  static encodeStreamPingRequest(pingId: number) {
-    return StreamPingRequest.encode({
-      pingId,
-    }).finish();
-  }
-
-  static encodeStreamRequest(
-    url: string,
-    requestLang: string,
-    responseLang: string,
-  ) {
-    return StreamTranslationRequest.encode({
-      url,
-      language: requestLang,
-      responseLanguage: responseLang,
-      unknown0: 1,
-      unknown1: 0,
-    }).finish();
-  }
-
-  static decodeStreamResponse(response: ArrayBuffer) {
-    return StreamTranslationResponse.decode(new Uint8Array(response));
-  }
+  return VideoTranslationAudioRequest.encode({
+    url,
+    translationId,
+    audioInfo: audioBuffer as AudioBufferObject,
+  }).finish();
 }
 
-export abstract class YandexSessionProtobuf {
-  static encodeSessionRequest(uuid: string, module: SessionModule) {
-    return YandexSessionRequest.encode({
-      uuid,
-      module,
-    }).finish();
-  }
-
-  static decodeSessionResponse(response: ArrayBuffer) {
-    return YandexSessionResponse.decode(new Uint8Array(response));
-  }
+function decodeTranslationAudioResponse(response: ArrayBuffer) {
+  return VideoTranslationAudioResponse.decode(new Uint8Array(response));
 }
+
+function encodeSubtitlesRequest(url: string, requestLang: string) {
+  return SubtitlesRequest.encode({
+    url,
+    language: requestLang,
+  }).finish();
+}
+
+function decodeSubtitlesResponse(response: ArrayBuffer) {
+  return SubtitlesResponse.decode(new Uint8Array(response));
+}
+
+function encodeStreamPingRequest(pingId: number) {
+  return StreamPingRequest.encode({
+    pingId,
+  }).finish();
+}
+
+function encodeStreamRequest(
+  url: string,
+  requestLang: string,
+  responseLang: string,
+) {
+  return StreamTranslationRequest.encode({
+    url,
+    language: requestLang,
+    responseLanguage: responseLang,
+    unknown0: 1,
+    unknown1: 0,
+  }).finish();
+}
+
+function decodeStreamResponse(response: ArrayBuffer) {
+  return StreamTranslationResponse.decode(new Uint8Array(response));
+}
+
+export const YandexVOTProtobuf = {
+  encodeTranslationRequest,
+  decodeTranslationResponse,
+  encodeTranslationCacheRequest,
+  decodeTranslationCacheResponse,
+  isPartialAudioBuffer,
+  encodeTranslationAudioRequest,
+  decodeTranslationAudioResponse,
+  encodeSubtitlesRequest,
+  decodeSubtitlesResponse,
+  encodeStreamPingRequest,
+  encodeStreamRequest,
+  decodeStreamResponse,
+} as const;
+
+function encodeSessionRequest(uuid: string, module: SessionModule) {
+  return YandexSessionRequest.encode({
+    uuid,
+    module,
+  }).finish();
+}
+
+function decodeSessionResponse(response: ArrayBuffer) {
+  return YandexSessionResponse.decode(new Uint8Array(response));
+}
+
+export const YandexSessionProtobuf = {
+  encodeSessionRequest,
+  decodeSessionResponse,
+} as const;

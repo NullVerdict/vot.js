@@ -1,7 +1,6 @@
+import type * as Sap from "@vot.js/shared/types/helpers/sap";
+import type { MinimalVideoData } from "../types/client";
 import { BaseHelper, VideoHelperError } from "./base";
-import { MinimalVideoData } from "../types/client";
-
-import * as Sap from "@vot.js/shared/types/helpers/sap";
 
 export default class TwitchHelper extends BaseHelper {
   API_ORIGIN = "https://clips.twitch.tv";
@@ -49,7 +48,7 @@ export default class TwitchHelper extends BaseHelper {
     );
 
     return {
-      url: this.service!.url + videoId,
+      url: this.service?.url + videoId,
       isStream,
       title,
     };

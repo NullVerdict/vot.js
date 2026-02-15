@@ -1,4 +1,4 @@
-import { ISODate } from "../utils.js";
+import type { ISODate } from "../utils.js";
 
 export type Caption = {
   _class: "caption";
@@ -11,11 +11,13 @@ export type Caption = {
   status: number;
   title: string;
   url: string;
+  download_url?: string;
   video_label: string;
 };
 
 export type MediaSource = {
   label: string;
+  quality?: string;
   src: string;
   type: string;
 };
@@ -26,6 +28,8 @@ export type Asset = {
   id: number;
   length: number;
   media_sources: MediaSource[];
+  stream_urls?: unknown;
+  download_urls?: unknown;
 };
 
 export type Lecture = {
@@ -56,5 +60,5 @@ export type ModuleData = {
 };
 
 export type ErrorData = {
-  detail: string;
+  detail?: string;
 };

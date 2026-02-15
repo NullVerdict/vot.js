@@ -1,4 +1,4 @@
-import { subtitlesFormats } from "../data/consts";
+import type { subtitlesFormats } from "../data/consts";
 
 export type SubtitleFormat = (typeof subtitlesFormats)[number];
 
